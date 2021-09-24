@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.*;
+
 @Entity
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,10 +31,10 @@ public class User extends BaseEntity {
     @Column(name = "last_name", nullable = false, length = 100)
     public String lastName;
 
-    @Embedded
-    private PhoneNumber phoneNumber;
+    @Column(name = "phone_number", nullable = false, length = 16)
+    private String phoneNumber;
 
     @Column(name = "account_status", nullable = false, length = 10)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private AccountStatus accountStatus;
 }
