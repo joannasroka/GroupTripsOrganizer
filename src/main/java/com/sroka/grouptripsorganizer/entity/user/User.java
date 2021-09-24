@@ -2,16 +2,22 @@ package com.sroka.grouptripsorganizer.entity.user;
 
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
-import static javax.persistence.EnumType.*;
+import static com.sroka.grouptripsorganizer.entity.user.AccountStatus.REGISTERED;
+import static javax.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 @Setter
 public class User extends BaseEntity {
@@ -37,4 +43,13 @@ public class User extends BaseEntity {
     @Column(name = "account_status", nullable = false, length = 10)
     @Enumerated(STRING)
     private AccountStatus accountStatus;
+
+    public User(String email, String password, String firstName, String lastName, String phoneNumber) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.accountStatus = REGISTERED;
+    }
 }
