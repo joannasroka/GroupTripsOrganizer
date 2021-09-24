@@ -2,6 +2,7 @@ package com.sroka.grouptripsorganizer.entity.user;
 
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
+import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import static com.sroka.grouptripsorganizer.entity.user.AccountStatus.REGISTERED;
+import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
 import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 

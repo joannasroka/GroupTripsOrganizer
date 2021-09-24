@@ -18,14 +18,43 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	boxableVersion = "1.6"
+	commonsCsvVersion = "1.9.0"
+	findsecbugsPluginVersion = "1.11.0"
+	jUnitVersion = "5.7.2"
+	mariaDbVersion = "2.7.3"
+	mockitoInlineVersion = "3.10.0"
+	modelMapperVersion = "2.4.4"
+	passayVersion = "1.6.0"
+	springdocOpenApiVersion = "1.5.10"
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation "org.springdoc:springdoc-openapi-ui:$springdocOpenApiVersion"
+	implementation "org.springdoc:springdoc-openapi-data-rest:$springdocOpenApiVersion"
+	implementation "org.springdoc:springdoc-openapi-security:$springdocOpenApiVersion"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation "org.modelmapper:modelmapper:$modelMapperVersion"
+	implementation "org.passay:passay:$passayVersion"
+	implementation "org.springframework.boot:spring-boot-starter-mail"
+	implementation 'org.springframework:spring-aspects'
+	implementation 'org.springframework.retry:spring-retry'
+	implementation "org.apache.commons:commons-csv:$commonsCsvVersion"
+	implementation "com.github.dhorions:boxable:$boxableVersion"
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
+	testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
+	testImplementation 'com.h2database:h2'
 }
 
 test {
