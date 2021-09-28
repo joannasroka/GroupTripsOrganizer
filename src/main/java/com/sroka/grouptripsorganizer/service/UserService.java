@@ -5,6 +5,7 @@ import com.sroka.grouptripsorganizer.dto.user.UserDto;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.mapper.UserMapper;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
+import com.sroka.grouptripsorganizer.service.account_activation.AccountActivationService;
 import com.sroka.grouptripsorganizer.validate.UserEmailValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class UserService {
     public UserDto create(UserCreateDto userCreateDto, Errors errors) {
         emailValidator.validateEmail(userCreateDto.getEmail(), errors);
 
-        User user =  userMapper.convertToEntity(userCreateDto);
+        User user = userMapper.convertToEntity(userCreateDto);
         user = userRepository.save(user);
 
         accountActivationService.sendActivationMail(user);

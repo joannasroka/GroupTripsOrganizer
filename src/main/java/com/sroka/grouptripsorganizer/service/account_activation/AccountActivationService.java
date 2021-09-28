@@ -1,8 +1,9 @@
-package com.sroka.grouptripsorganizer.service;
+package com.sroka.grouptripsorganizer.service.account_activation;
 
 
 import com.sroka.grouptripsorganizer.entity.account_activation.VerificationToken;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import com.sroka.grouptripsorganizer.service.mail.ActivationEmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
