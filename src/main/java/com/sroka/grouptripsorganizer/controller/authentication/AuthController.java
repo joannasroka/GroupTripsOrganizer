@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.authentication;
+package com.sroka.grouptripsorganizer.controller.authentication;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
