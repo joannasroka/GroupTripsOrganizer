@@ -8,8 +8,6 @@ import com.sroka.grouptripsorganizer.service.account_activation.VerificationToke
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 
 @RestController
@@ -26,10 +24,9 @@ public class VerificationTokenController extends BaseController {
 
 
     @PostMapping
-    public void activateAccount(@RequestBody AccountActivationDto accountActivation, HttpServletRequest request) {
+    public void activateAccount(@RequestBody AccountActivationDto accountActivation) {
         verificationTokenService.activateAccount(accountActivation);
     }
-
 
     // CHANGED HERE: user email instead of admin id and user id
     @GetMapping("/resend/users/{userEmail}")
