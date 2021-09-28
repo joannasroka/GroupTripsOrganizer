@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 public class AccountActivationDto {
-
     @NotBlank(message = "error.cannotBeBlank")
     @Schema(required = true)
     private String token;
