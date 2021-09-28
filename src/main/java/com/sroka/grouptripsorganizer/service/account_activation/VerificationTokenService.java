@@ -1,14 +1,16 @@
-package com.sroka.grouptripsorganizer.service;
+package com.sroka.grouptripsorganizer.service.account_activation;
 
 
 import com.sroka.grouptripsorganizer.dto.AccountActivationDto;
 import com.sroka.grouptripsorganizer.entity.account_activation.VerificationToken;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.AccountAlreadyActivatedException;
+import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.InvalidPasswordException;
 import com.sroka.grouptripsorganizer.exception.TokenNotFoundException;
-import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import com.sroka.grouptripsorganizer.repository.authentication.VerificationTokenRepository;
+import com.sroka.grouptripsorganizer.repository.user.UserRepository;
+import com.sroka.grouptripsorganizer.service.mail.ActivationEmailService;
 import com.sroka.grouptripsorganizer.validate.CustomPasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,9 +64,9 @@ public class VerificationTokenService {
         tokenRepository.delete(verificationToken);
     }
 
-    public void resend(Long executorId, Long userId) {
-        User executingUser = userRepository.getById(executorId);
-        User userToResendToken = userRepository.getById(userId);
+    public void resend(String userEmail) {
+        User userToResendToken = userRepository.findByEmailIgnoreCase(userEmail)
+                .orElseThrow(DatabaseEntityNotFoundException::new);
 
         if (userToResendToken.getAccountStatus() == ACTIVE) {
             throw new AccountAlreadyActivatedException();
