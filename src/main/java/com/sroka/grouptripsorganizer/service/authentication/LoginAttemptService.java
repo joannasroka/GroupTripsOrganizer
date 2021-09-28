@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.service;
+package com.sroka.grouptripsorganizer.service.authentication;
 
 import com.sroka.grouptripsorganizer.entity.authentication.FailedLoginAttempt;
 import com.sroka.grouptripsorganizer.properties.FailLoginAttemptsProperties;

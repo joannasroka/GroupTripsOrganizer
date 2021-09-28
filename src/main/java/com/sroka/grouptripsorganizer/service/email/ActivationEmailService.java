@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.service.mail;
+package com.sroka.grouptripsorganizer.service.email;
 
 import com.sroka.grouptripsorganizer.email.AccountActivationMailGenerator;
 import com.sroka.grouptripsorganizer.email.EmailSender;
