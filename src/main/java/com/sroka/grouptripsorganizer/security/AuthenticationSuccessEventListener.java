@@ -1,6 +1,6 @@
 package com.sroka.grouptripsorganizer.security;
 
-import com.sroka.grouptripsorganizer.service.LoginAttemptService;
+import com.sroka.grouptripsorganizer.service.authentication.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;

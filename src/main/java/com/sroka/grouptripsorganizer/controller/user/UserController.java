@@ -5,7 +5,7 @@ import com.sroka.grouptripsorganizer.dto.user.UserCreateDto;
 import com.sroka.grouptripsorganizer.dto.user.UserDto;
 import com.sroka.grouptripsorganizer.dto.user.UserUpdateDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
-import com.sroka.grouptripsorganizer.service.UserService;
+import com.sroka.grouptripsorganizer.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;

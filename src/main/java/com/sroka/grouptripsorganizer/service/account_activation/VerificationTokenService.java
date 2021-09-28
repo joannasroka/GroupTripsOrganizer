@@ -10,7 +10,7 @@ import com.sroka.grouptripsorganizer.exception.InvalidPasswordException;
 import com.sroka.grouptripsorganizer.exception.TokenNotFoundException;
 import com.sroka.grouptripsorganizer.repository.authentication.VerificationTokenRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
-import com.sroka.grouptripsorganizer.service.mail.ActivationEmailService;
+import com.sroka.grouptripsorganizer.service.email.ActivationEmailService;
 import com.sroka.grouptripsorganizer.validate.CustomPasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
