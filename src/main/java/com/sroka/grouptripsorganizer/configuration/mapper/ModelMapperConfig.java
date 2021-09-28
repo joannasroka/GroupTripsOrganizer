@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.configuration;
+package com.sroka.grouptripsorganizer.configuration.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

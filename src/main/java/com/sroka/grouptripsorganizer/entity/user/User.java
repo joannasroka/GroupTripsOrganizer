@@ -18,7 +18,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor(access = PROTECTED)
 @Getter
 @Setter
 public class User extends BaseEntity {
@@ -44,6 +43,10 @@ public class User extends BaseEntity {
     @Column(name = "account_status", nullable = false, length = 10)
     @Enumerated(STRING)
     private AccountStatus accountStatus;
+
+    public User() {
+        this.accountStatus = REGISTERED;
+    }
 
     public User(String email, String password, String firstName, String lastName, String phoneNumber) {
         this.email = email;

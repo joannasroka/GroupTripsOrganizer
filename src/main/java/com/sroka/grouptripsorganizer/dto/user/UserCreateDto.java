@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.dto;
+package com.sroka.grouptripsorganizer.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class UserCreateDto {
 
     @NotBlank(message = "error.cannotBeBlank")
     @Length(min = 3, max = 16, message = "error.invalidFieldLength")
-    @Pattern(regexp = "^\\+\\d{0,100}", message = "error.invalidPhoneNumber")
+    @Pattern(regexp = "^\\+?\\d{2,100}", message = "error.invalidPhoneNumber")
     @Schema(required = true)
     private String phoneNumber;
 }

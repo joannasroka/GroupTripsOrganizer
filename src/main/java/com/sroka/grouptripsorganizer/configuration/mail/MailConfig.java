@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.configuration;
+package com.sroka.grouptripsorganizer.configuration.mail;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

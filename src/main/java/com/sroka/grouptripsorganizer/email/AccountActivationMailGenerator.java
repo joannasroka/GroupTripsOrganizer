@@ -15,13 +15,12 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-import static com.sroka.grouptripsorganizer.configuration.InternalizationConfig.MAIL_MESSAGE_SOURCE_NAME;
+import static com.sroka.grouptripsorganizer.configuration.internalization.InternalizationConfig.MAIL_MESSAGE_SOURCE_NAME;
 import static java.text.MessageFormat.format;
 
 @Component
 @RequiredArgsConstructor
 public class AccountActivationMailGenerator {
-
     private final String SUBJECT_KEY = "mail.activation.subject";
     private final String OPENING_KEY = "mail.opening";
     private final String BODY_KEY = "mail.activation.body";
@@ -45,12 +44,10 @@ public class AccountActivationMailGenerator {
     }
 
     public String generate(String openingName, String activationLink, LocalDateTime linkExpirationTime, Locale locale) {
-
         return replaceMailWithTranslations(openingName, activationLink, linkExpirationTime, locale, mail);
     }
 
     private String replaceMailWithTranslations(String openingName, String activationLink, LocalDateTime linkExpirationTime, Locale locale, String mail) {
-
         String subject = messageSource.getMessage(SUBJECT_KEY, null, locale);
         String opening = messageSource.getMessage(OPENING_KEY, new Object[]{openingName}, locale);
         String body = messageSource.getMessage(BODY_KEY, null, locale);
@@ -59,7 +56,6 @@ public class AccountActivationMailGenerator {
         String closing = messageSource.getMessage(CLOSING_KEY, null, locale);
         String companyName = messageSource.getMessage(COMPANY_NAME_KEY, null, locale);
 
-        // arguments order: subject, opening, body, activationLink, linkDescription, linkExpiration, closing, companyName
         return format(mail, subject, opening, body, activationLink, linkDescription, linkExpiration, closing, companyName);
     }
 }

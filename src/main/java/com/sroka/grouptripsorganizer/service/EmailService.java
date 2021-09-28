@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static com.sroka.grouptripsorganizer.configuration.MailConfig.MAIL_THREAD_POOL_TASK_EXECUTOR_NAME;
+import static com.sroka.grouptripsorganizer.configuration.mail.MailConfig.MAIL_THREAD_POOL_TASK_EXECUTOR_NAME;
 
 @Service
 @RequiredArgsConstructor

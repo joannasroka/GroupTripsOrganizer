@@ -1,5 +1,6 @@
-package com.sroka.grouptripsorganizer.entity;
+package com.sroka.grouptripsorganizer.entity.authentication;
 
+import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.Column;

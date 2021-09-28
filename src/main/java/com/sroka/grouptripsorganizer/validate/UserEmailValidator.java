@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.validate;
 
 import com.sroka.grouptripsorganizer.exception.ValidationException;
-import com.sroka.grouptripsorganizer.repository.UserRepository;
+import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

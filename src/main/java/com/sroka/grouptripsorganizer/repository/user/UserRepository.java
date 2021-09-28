@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.repository;
+package com.sroka.grouptripsorganizer.repository.user;
 
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import com.sroka.grouptripsorganizer.entity.user.User;

@@ -1,8 +1,8 @@
 package com.sroka.grouptripsorganizer.service;
 
-import com.sroka.grouptripsorganizer.entity.FailedLoginAttempt;
+import com.sroka.grouptripsorganizer.entity.authentication.FailedLoginAttempt;
 import com.sroka.grouptripsorganizer.properties.FailLoginAttemptsProperties;
-import com.sroka.grouptripsorganizer.repository.FailLoginRepository;
+import com.sroka.grouptripsorganizer.repository.authentication.FailLoginRepository;
 import com.sroka.grouptripsorganizer.security.exception.UserLockedAuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -26,7 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/version",
             "/api/translations/**",
             "/h2-console/**",
-            "/api/tokens/**"
+            "/api/tokens/**",
+            "/api/users"
     };
 
     private static final String[] SWAGGER_AUTHENTICATION_WHITELIST = {

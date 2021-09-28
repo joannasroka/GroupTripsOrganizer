@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.configuration;
+package com.sroka.grouptripsorganizer.configuration.internalization;
 
 import org.springframework.context.support.ResourceBundleMessageSource;
 

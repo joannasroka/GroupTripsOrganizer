@@ -1,6 +1,6 @@
-package com.sroka.grouptripsorganizer.repository;
+package com.sroka.grouptripsorganizer.repository.authentication;
 
-import com.sroka.grouptripsorganizer.entity.FailedLoginAttempt;
+import com.sroka.grouptripsorganizer.entity.authentication.FailedLoginAttempt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.repository;
+package com.sroka.grouptripsorganizer.repository.authentication;
 
 import com.sroka.grouptripsorganizer.entity.account_activation.VerificationToken;
 import com.sroka.grouptripsorganizer.entity.user.User;

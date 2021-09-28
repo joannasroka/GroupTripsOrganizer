@@ -2,7 +2,7 @@ package com.sroka.grouptripsorganizer.security;
 
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import com.sroka.grouptripsorganizer.entity.user.User;
-import com.sroka.grouptripsorganizer.repository.UserRepository;
+import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import com.sroka.grouptripsorganizer.service.LoginAttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
