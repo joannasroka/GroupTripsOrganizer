@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.service.account_activation;
 
 
-import com.sroka.grouptripsorganizer.dto.AccountActivationDto;
+import com.sroka.grouptripsorganizer.dto.account_activation.AccountActivationDto;
 import com.sroka.grouptripsorganizer.entity.account_activation.VerificationToken;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.AccountAlreadyActivatedException;

@@ -2,7 +2,7 @@ package com.sroka.grouptripsorganizer.controller.account_activation;
 
 
 import com.sroka.grouptripsorganizer.controller.BaseController;
-import com.sroka.grouptripsorganizer.dto.AccountActivationDto;
+import com.sroka.grouptripsorganizer.dto.account_activation.AccountActivationDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
 import com.sroka.grouptripsorganizer.service.account_activation.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
