@@ -2,6 +2,7 @@ package com.sroka.grouptripsorganizer.service;
 
 import com.sroka.grouptripsorganizer.dto.user.UserCreateDto;
 import com.sroka.grouptripsorganizer.dto.user.UserDto;
+import com.sroka.grouptripsorganizer.dto.user.UserUpdateDto;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.mapper.UserMapper;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
@@ -31,5 +32,19 @@ public class UserService {
         accountActivationService.sendActivationMail(user);
 
         return userMapper.convertToDto(user);
+    }
+
+    public UserDto update(UserUpdateDto userUpdateDto, Long userId) {
+        User user = userRepository.getById(userId);
+
+        updateUserFields(user, userUpdateDto);
+
+        return userMapper.convertToDto(user);
+    }
+
+    private void updateUserFields(User user, UserUpdateDto userUpdateDto) {
+        user.setFirstName(userUpdateDto.getFirstName());
+        user.setLastName(userUpdateDto.getLastName());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
     }
 }
