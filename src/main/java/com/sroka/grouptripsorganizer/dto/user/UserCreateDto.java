@@ -8,7 +8,9 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +37,8 @@ public class UserCreateDto {
     @Pattern(regexp = "^\\+?\\d{2,100}", message = "error.invalidPhoneNumber")
     @Schema(required = true)
     private String phoneNumber;
+
+    @Past(message = "error.onlyPastDates")
+    @Schema(required = true)
+    private LocalDate dateOfBirth;
 }
