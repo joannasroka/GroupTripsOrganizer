@@ -32,14 +32,14 @@ public class GroupController extends BaseController {
     }
 
     @PostMapping("/{groupId}/users/{userId}")
-    public void addParticipant(@PathVariable long groupId,
-                               @PathVariable long userId) {
+    public void addParticipant(@PathVariable Long groupId,
+                               @PathVariable Long userId) {
         groupService.addParticipant(groupId, userId);
     }
 
     @DeleteMapping("/{groupId}/users/{userId}")
-    public void removeParticipant(@PathVariable long groupId,
-                                  @PathVariable long userId) {
+    public void removeParticipant(@PathVariable Long groupId,
+                                  @PathVariable Long userId) {
         groupService.removeParticipant(groupId, userId);
     }
 }
