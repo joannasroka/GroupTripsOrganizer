@@ -1,6 +1,5 @@
 package com.sroka.grouptripsorganizer.dto.user;
 
-import com.sroka.grouptripsorganizer.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +15,8 @@ public class GroupDto {
     private String name;
 
     @Schema(required = true)
-    private User owner;
+    private UserDto owner;
 
     @Schema(required = true)
-    private Set<User> participants;
+    private Set<UserDto> participants;
 }

@@ -1,5 +1,6 @@
 package com.sroka.grouptripsorganizer.controller.user;
 
+import com.sroka.grouptripsorganizer.controller.BaseController;
 import com.sroka.grouptripsorganizer.dto.user.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.user.GroupDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
@@ -16,7 +17,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/groups")
 @RequiredArgsConstructor
-public class GroupController {
+public class GroupController extends BaseController {
     private final GroupService groupService;
 
     private final AuthenticationContextService authenticationContextService;
@@ -28,5 +29,17 @@ public class GroupController {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
         return groupService.create(groupCreateDto, currentUserId, errors);
+    }
+
+    @PostMapping("/{groupId}/users/{userId}")
+    public void addParticipant(@PathVariable long groupId,
+                               @PathVariable long userId) {
+        groupService.addParticipant(groupId, userId);
+    }
+
+    @DeleteMapping("/{groupId}/users/{userId}")
+    public void removeParticipant(@PathVariable long groupId,
+                                  @PathVariable long userId) {
+        groupService.removeParticipant(groupId, userId);
     }
 }

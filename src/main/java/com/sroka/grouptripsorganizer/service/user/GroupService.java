@@ -37,6 +37,20 @@ public class GroupService {
         return groupMapper.convertToDto(savedGroup);
     }
 
+    public void addParticipant(Long groupId, Long userId) {
+        Group group = groupRepository.getById(groupId);
+        User user = userRepository.getById(userId);
+
+        group.addParticipant(user);
+    }
+
+    public void removeParticipant(Long groupId, Long userId) {
+        Group group = groupRepository.getById(groupId);
+        User user = userRepository.getById(userId);
+
+        group.removeParticipant(user);
+    }
+
     private void validateFields(String groupName, User owner, Errors errors) {
         if (!groupName.isBlank() && !isNameUnique(groupName, owner)) {
             errors.rejectValue("name", "error.groupNameExists", "error.groupNameExists");
