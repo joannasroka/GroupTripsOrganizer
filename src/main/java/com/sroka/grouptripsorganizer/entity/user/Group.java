@@ -25,6 +25,9 @@ public class Group extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> participants;
 
+    @Column(name = "owner", nullable = false, updatable = false)
+    private User owner;
+
     public void addParticipant(User user) {
         if (participants.contains(user)) {
             throw new UserAlreadyInThisGroupException();
