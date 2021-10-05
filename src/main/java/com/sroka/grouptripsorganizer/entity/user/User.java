@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
@@ -36,6 +38,9 @@ public class User extends BaseEntity {
     @Column(name = "phone_number", nullable = false, length = 16)
     private String phoneNumber;
 
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
     @Column(name = "account_status", nullable = false, length = 10)
     @Enumerated(STRING)
     private AccountStatus accountStatus;
@@ -47,12 +52,14 @@ public class User extends BaseEntity {
         this.accountStatus = REGISTERED;
     }
 
-    public User(String email, String password, String firstName, String lastName, String phoneNumber) {
+    public User(String email, String password, String firstName, String lastName, String phoneNumber, LocalDate dateOfBirth) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.dateOfBirth = dateOfBirth;
         this.accountStatus = REGISTERED;
+        groups = new HashSet<>();
     }
 }
