@@ -29,7 +29,7 @@ public class VerificationTokenController extends BaseController {
     }
 
     // CHANGED HERE: user email instead of admin id and user id
-    @GetMapping("/resend/users/{userEmail}")
+    @PostMapping("/resend/users/{userEmail}")
     public void resendActivationToken(@PathVariable("userEmail") String userEmail) {
         verificationTokenService.resend(userEmail);
     }
