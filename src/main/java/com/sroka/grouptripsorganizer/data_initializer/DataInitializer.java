@@ -67,7 +67,12 @@ public class DataInitializer implements CommandLineRunner {
 
     private User createUser(int number, AccountStatus accountStatus) {
         String mail = "user" + number + "." + accountStatus.toString().toLowerCase() + "@mail.com";
-        String password = passwordEncoder.encode(PASSWORD);
+        String password = null;
+
+        if (ACTIVE.equals(accountStatus)) {
+            password = passwordEncoder.encode(PASSWORD);
+        }
+
         String firstName = "FirstName" + number + "." + accountStatus.toString().toLowerCase();
         String lastName = "LastName" + number + "." + accountStatus.toString().toLowerCase();
         String phoneNumber = "123456789";
