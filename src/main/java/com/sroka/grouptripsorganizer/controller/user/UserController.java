@@ -36,4 +36,11 @@ public class UserController extends BaseController {
 
         return userService.update(userUpdateDto, userId);
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/@me")
+    public UserDto getCurrent() {
+        Long userId = authenticationContextService.getCurrentUserId();
+        return userService.getById(userId);
+    }
 }

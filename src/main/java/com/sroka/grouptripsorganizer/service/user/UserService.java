@@ -23,6 +23,11 @@ public class UserService {
     private final AccountActivationService accountActivationService;
     private final UserEmailValidator emailValidator;
 
+    public UserDto getById(Long id) {
+        User user = userRepository.getById(id);
+        return userMapper.convertToDto(user);
+    }
+
     public UserDto create(UserCreateDto userCreateDto, Errors errors) {
         emailValidator.validateEmail(userCreateDto.getEmail(), errors);
 
