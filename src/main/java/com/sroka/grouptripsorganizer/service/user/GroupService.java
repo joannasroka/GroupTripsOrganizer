@@ -9,6 +9,8 @@ import com.sroka.grouptripsorganizer.mapper.GroupMapper;
 import com.sroka.grouptripsorganizer.repository.user.GroupRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
@@ -50,6 +52,12 @@ public class GroupService {
         User user = userRepository.getById(userId);
 
         group.removeParticipant(user);
+    }
+
+    public Page<GroupDto> getAllByUser(Long userId, Pageable pageable) {
+        Page<Group> groups = groupRepository.findAllByUserId(userId, pageable);
+
+        return groups.map(groupMapper::convertToDto);
     }
 
     private void validateFields(String groupName, User owner, Errors errors) {

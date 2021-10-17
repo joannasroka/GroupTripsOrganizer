@@ -20,6 +20,8 @@ import static javax.persistence.CascadeType.ALL;
 @Setter
 @NoArgsConstructor
 public class Group extends BaseEntity {
+    public static final String NAME_FIELD_NAME = "name";
+
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 

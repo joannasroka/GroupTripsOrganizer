@@ -5,19 +5,30 @@ import com.sroka.grouptripsorganizer.dto.user.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.user.GroupDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
 import com.sroka.grouptripsorganizer.service.user.GroupService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+import java.util.Set;
+
+import static com.sroka.grouptripsorganizer.entity.user.Group.NAME_FIELD_NAME;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class GroupController extends BaseController {
+    private static final int MAX_ALLOWED_BLOOD_GROUPS_PER_PAGE = 10;
+    private static final Set<String> ALLOWED_GROUPS_SORTING_PARAMS = Set.of(NAME_FIELD_NAME);
+
     private final GroupService groupService;
 
     private final AuthenticationContextService authenticationContextService;
@@ -31,15 +42,28 @@ public class GroupController extends BaseController {
         return groupService.create(groupCreateDto, currentUserId, errors);
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/{groupId}/users/{userId}")
     public void addParticipant(@PathVariable Long groupId,
                                @PathVariable Long userId) {
         groupService.addParticipant(groupId, userId);
     }
 
+    @PreAuthorize("permitAll()")
     @DeleteMapping("/{groupId}/users/{userId}")
     public void removeParticipant(@PathVariable Long groupId,
                                   @PathVariable Long userId) {
         groupService.removeParticipant(groupId, userId);
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping
+    public Page<GroupDto> getAllOwnGroups(@PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
+        pageSizeValidation(pageable, MAX_ALLOWED_BLOOD_GROUPS_PER_PAGE);
+        sortParametersValidation(pageable, ALLOWED_GROUPS_SORTING_PARAMS);
+
+        Long userId = authenticationContextService.getCurrentUserId();
+
+        return groupService.getAllByUser(userId, pageable);
     }
 }

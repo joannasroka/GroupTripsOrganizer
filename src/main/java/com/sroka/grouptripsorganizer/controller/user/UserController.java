@@ -30,7 +30,7 @@ public class UserController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @PutMapping("/me")
+    @PutMapping("/@me")
     public UserDto updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto) {
         Long userId = authenticationContextService.getCurrentUserId();
 
