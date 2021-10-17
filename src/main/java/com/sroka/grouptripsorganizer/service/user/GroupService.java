@@ -32,6 +32,7 @@ public class GroupService {
         Group newGroup = groupMapper.convertToEntity(groupCreateDto);
         newGroup.setOwner(owner);
         newGroup.setParticipants(new HashSet<>());
+        newGroup.addParticipant(owner);
 
         Group savedGroup = groupRepository.save(newGroup);
         return groupMapper.convertToDto(savedGroup);

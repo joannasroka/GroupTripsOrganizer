@@ -1,7 +1,9 @@
 package com.sroka.grouptripsorganizer.entity.user;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
+import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.exception.UserAlreadyInThisGroupException;
+import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +11,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "groups")
@@ -28,10 +32,14 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "owner_id", nullable = false, updatable = false)
     private User owner;
 
+    @OneToMany(mappedBy = "group", cascade = ALL)
+    private Set<Bill> bills;
+
     public Group(String name, User owner) {
         this.name = name;
         this.owner = owner;
         participants = new HashSet<>();
+        bills = new HashSet<>();
         addParticipant(owner);
     }
 
@@ -44,6 +52,9 @@ public class Group extends BaseEntity {
     }
 
     public void removeParticipant(User user) {
+        if (!participants.contains(user)) {
+            throw new UserNotInThisGroupException();
+        }
         participants.remove(user);
         user.getGroups().remove(this);
     }

@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDto {
     @Schema(required = true)
+    private Long id;
+
+    @Schema(required = true)
     private String email;
 
     @Schema(required = true)

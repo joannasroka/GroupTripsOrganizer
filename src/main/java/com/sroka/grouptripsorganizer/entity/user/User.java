@@ -3,6 +3,8 @@ package com.sroka.grouptripsorganizer.entity.user;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
+import com.sroka.grouptripsorganizer.entity.bill.Bill;
+import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.STRING;
 
 @Entity
@@ -44,9 +47,15 @@ public class User extends BaseEntity {
     @Column(name = "account_status", nullable = false, length = 10)
     @Enumerated(STRING)
     private AccountStatus accountStatus;
-
+    
     @ManyToMany(mappedBy = "participants")
     private Set<Group> groups;
+
+    @OneToMany(mappedBy = "payer", cascade = ALL)
+    private Set<Bill> paid;
+
+    @OneToMany(mappedBy = "debtor")
+    private Set<BillShare> owe;
 
     public User() {
         this.accountStatus = REGISTERED;

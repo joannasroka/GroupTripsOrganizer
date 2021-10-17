@@ -12,6 +12,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class GroupDto {
     @Schema(required = true)
+    private Long id;
+
+    @Schema(required = true)
     private String name;
 
     @Schema(required = true)
