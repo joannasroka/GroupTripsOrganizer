@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.controller.user;
+package com.sroka.grouptripsorganizer.controller.group;
 
 import com.sroka.grouptripsorganizer.controller.BaseController;
 import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Set;
 
-import static com.sroka.grouptripsorganizer.entity.user.Group.NAME_FIELD_NAME;
+import static com.sroka.grouptripsorganizer.entity.group.Group.NAME_FIELD_NAME;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController

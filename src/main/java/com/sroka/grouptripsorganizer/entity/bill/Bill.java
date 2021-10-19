@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.entity.bill;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import com.sroka.grouptripsorganizer.entity.user.Group;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,9 @@
 package com.sroka.grouptripsorganizer.data_initializer;
 
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
-import com.sroka.grouptripsorganizer.entity.user.Group;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
-import com.sroka.grouptripsorganizer.repository.user.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -5,6 +5,7 @@ import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,11 +2,11 @@ package com.sroka.grouptripsorganizer.service.user;
 
 import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.group.GroupDto;
-import com.sroka.grouptripsorganizer.entity.user.Group;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.GroupMapper;
-import com.sroka.grouptripsorganizer.repository.user.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

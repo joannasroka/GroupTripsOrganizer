@@ -1,7 +1,8 @@
-package com.sroka.grouptripsorganizer.entity.user;
+package com.sroka.grouptripsorganizer.entity.group;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
+import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.UserAlreadyInThisGroupException;
 import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import lombok.Getter;

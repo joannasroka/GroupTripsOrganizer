@@ -1,6 +1,6 @@
-package com.sroka.grouptripsorganizer.repository.user;
+package com.sroka.grouptripsorganizer.repository.group;
 
-import com.sroka.grouptripsorganizer.entity.user.Group;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import org.springframework.data.domain.Page;

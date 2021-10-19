@@ -2,7 +2,7 @@ package com.sroka.grouptripsorganizer.mapper;
 
 import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.group.GroupDto;
-import com.sroka.grouptripsorganizer.entity.user.Group;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
