@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.service.user;
+package com.sroka.grouptripsorganizer.service.group;
 
 import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.group.GroupDto;

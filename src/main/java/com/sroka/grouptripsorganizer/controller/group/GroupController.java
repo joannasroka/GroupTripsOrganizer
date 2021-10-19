@@ -4,7 +4,7 @@ import com.sroka.grouptripsorganizer.controller.BaseController;
 import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
 import com.sroka.grouptripsorganizer.dto.group.GroupDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
-import com.sroka.grouptripsorganizer.service.user.GroupService;
+import com.sroka.grouptripsorganizer.service.group.GroupService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
