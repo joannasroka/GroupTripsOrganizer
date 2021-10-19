@@ -26,10 +26,9 @@ public class BillController extends BaseController {
     @PreAuthorize("permitAll()")
     @PostMapping
     @ResponseStatus(CREATED)
-    public BillDto createBill(@Valid @RequestBody BillCreateDto billCreateDto, @RequestBody Long groupId,
-                              @RequestBody List<User> debtors) {
+    public BillDto createBill(@Valid @RequestBody BillCreateDto billCreateDto) {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return billService.create(billCreateDto, debtors, groupId, currentUserId);
+        return billService.create(billCreateDto, currentUserId);
     }
 }

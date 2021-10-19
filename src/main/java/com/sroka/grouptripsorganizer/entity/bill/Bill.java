@@ -28,7 +28,7 @@ public class Bill extends BaseEntity {
     private BillCategory category;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "payer_id", nullable = false)
     private User payer;
 
     @Column(name = "date", nullable = false)
@@ -42,6 +42,7 @@ public class Bill extends BaseEntity {
     private Currency currency;
 
     @Column(name = "split_category", nullable = false)
+    @Enumerated(STRING)
     private SplitCategory splitCategory;
 
     @ManyToOne

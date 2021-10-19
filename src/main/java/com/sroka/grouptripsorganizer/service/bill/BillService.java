@@ -17,10 +17,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
-import static java.math.RoundingMode.*;
+import static java.math.RoundingMode.DOWN;
 
 @Service
 @Transactional
@@ -30,20 +29,20 @@ public class BillService {
 
     private final BillRepository billRepository;
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
     private final BillShareRepository billShareRepository;
 
-    private final GroupRepository groupRepository;
-
-    public BillDto create(BillCreateDto billCreateDto, List<User> debtors, Long groupId, Long creatorId) {
-        Group group = groupRepository.getById(groupId);
+    public BillDto create(BillCreateDto billCreateDto, Long creatorId) {
+        Group group = groupRepository.getById(billCreateDto.getGroupId());
         User creator = userRepository.getById(creatorId);
-        validateBillCreator(creator, group);
+        User payer = userRepository.getById(billCreateDto.getPayerId());
+
+        validate(creator, payer, group);
 
         Bill newBill = billMapper.convertToEntity(billCreateDto);
         newBill.setGroup(group);
-
+        newBill.setPayer(payer);
         Bill savedBill = billRepository.save(newBill);
-        splitBill(savedBill, debtors);
 
         return billMapper.convertToDto(savedBill);
     }
@@ -58,8 +57,8 @@ public class BillService {
         });
     }
 
-    private void validateBillCreator(User user, Group group) {
-        if (!group.getParticipants().contains(user)) {
+    private void validate(User creator, User payer, Group group) {
+        if (!group.getParticipants().contains(creator) || !group.getParticipants().contains(payer)) {
             throw new UserNotInThisGroupException();
         }
     }

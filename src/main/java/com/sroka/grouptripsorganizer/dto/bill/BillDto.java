@@ -1,8 +1,11 @@
 package com.sroka.grouptripsorganizer.dto.bill;
 
+import com.sroka.grouptripsorganizer.dto.group.GroupDto;
+import com.sroka.grouptripsorganizer.dto.user.UserDto;
 import com.sroka.grouptripsorganizer.entity.bill.BillCategory;
 import com.sroka.grouptripsorganizer.entity.bill.Currency;
 import com.sroka.grouptripsorganizer.entity.bill.SplitCategory;
+import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -26,7 +29,10 @@ public class BillDto {
     private BillCategory category;
 
     @Schema(required = true)
-    private User payer;
+    private UserDto payer;
+
+    @Schema(required = true)
+    private GroupDto group;
 
     @Schema(required = true)
     private LocalDate date;
