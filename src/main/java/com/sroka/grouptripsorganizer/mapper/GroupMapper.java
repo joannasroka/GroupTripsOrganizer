@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.mapper;
 
-import com.sroka.grouptripsorganizer.dto.user.GroupCreateDto;
-import com.sroka.grouptripsorganizer.dto.user.GroupDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupDto;
 import com.sroka.grouptripsorganizer.entity.user.Group;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

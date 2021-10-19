@@ -31,7 +31,7 @@ public class Group extends BaseEntity {
     private Set<User> participants;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false, updatable = false)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @OneToMany(mappedBy = "group", cascade = ALL)
@@ -58,6 +58,9 @@ public class Group extends BaseEntity {
             throw new UserNotInThisGroupException();
         }
         participants.remove(user);
+        if (owner == user) {
+            owner = null;
+        }
         user.getGroups().remove(this);
     }
 }
