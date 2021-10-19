@@ -1,5 +1,6 @@
-package com.sroka.grouptripsorganizer.dto.user;
+package com.sroka.grouptripsorganizer.dto.group;
 
+import com.sroka.grouptripsorganizer.dto.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
