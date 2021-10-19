@@ -11,10 +11,16 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupDto {
+public class GroupWithParticipantsDto {
     @Schema(required = true)
     private Long id;
 
     @Schema(required = true)
     private String name;
+
+    @Schema(required = true)
+    private UserDto owner;
+
+    @Schema(required = true)
+    private Set<UserDto> participants;
 }
