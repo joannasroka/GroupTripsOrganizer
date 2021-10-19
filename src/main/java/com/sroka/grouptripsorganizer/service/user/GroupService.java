@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.service.user;
 
-import com.sroka.grouptripsorganizer.dto.user.GroupCreateDto;
-import com.sroka.grouptripsorganizer.dto.user.GroupDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupDto;
 import com.sroka.grouptripsorganizer.entity.user.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.ValidationException;

@@ -1,8 +1,8 @@
 package com.sroka.grouptripsorganizer.controller.user;
 
 import com.sroka.grouptripsorganizer.controller.BaseController;
-import com.sroka.grouptripsorganizer.dto.user.GroupCreateDto;
-import com.sroka.grouptripsorganizer.dto.user.GroupDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupCreateDto;
+import com.sroka.grouptripsorganizer.dto.group.GroupDto;
 import com.sroka.grouptripsorganizer.security.AuthenticationContextService;
 import com.sroka.grouptripsorganizer.service.user.GroupService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,8 +15,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.List;
 import java.util.Set;
 
 import static com.sroka.grouptripsorganizer.entity.user.Group.NAME_FIELD_NAME;
