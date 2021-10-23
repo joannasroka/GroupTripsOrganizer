@@ -2,8 +2,10 @@ package com.sroka.grouptripsorganizer.entity.bill;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.user.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +13,8 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "bill_shares")
 @Getter
+@Setter
+@NoArgsConstructor
 public class BillShare extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "payer_id", nullable = false)
@@ -24,7 +28,7 @@ public class BillShare extends BaseEntity {
     private BigDecimal amount;
 
     @Column(name = "paid", nullable = false)
-    private boolean paid;
+    private boolean paid = false;
 
     @ManyToOne
     @JoinColumn(name = "bill_id", nullable = false)

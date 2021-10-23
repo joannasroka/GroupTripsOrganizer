@@ -3,12 +3,15 @@ package com.sroka.grouptripsorganizer.entity.bill;
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
@@ -18,6 +21,8 @@ import static javax.persistence.EnumType.STRING;
 @Table(name = "bills")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 // eksport do PDF/ CSV?
 public class Bill extends BaseEntity {
     @Column(name = "title", nullable = false, length = 100)
@@ -50,5 +55,8 @@ public class Bill extends BaseEntity {
     private Group group;
 
     @OneToMany(mappedBy = "bill", cascade = ALL)
-    private Set<BillShare> billShares;
+    private List<BillShare> billShares;
+
+    @Column(name = "paid", nullable = false)
+    private boolean paid = false;
 }

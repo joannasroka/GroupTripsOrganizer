@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class BillShareMapper {
@@ -20,4 +23,10 @@ public class BillShareMapper {
         return modelMapper.map(billShareCreateDto, BillShare.class);
     }
 
+    public List<BillShareDto> convertToDtos(List<BillShare> billShares) {
+        return billShares
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,5 +1,7 @@
 package com.sroka.grouptripsorganizer.entity.bill;
 
+import java.util.List;
+
 public enum BillCategory {
     TRANSPORT,
     ACCOMMODATION,
@@ -10,5 +12,7 @@ public enum BillCategory {
     INSURANCE,
     SHOPPING,
     HEALTH,
-    OTHER
+    OTHER;
+
+    public static final List<BillCategory> BILL_CATEGORIES = List.of(values());
 }

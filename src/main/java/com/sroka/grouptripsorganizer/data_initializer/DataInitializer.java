@@ -1,8 +1,14 @@
 package com.sroka.grouptripsorganizer.data_initializer;
 
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
+import com.sroka.grouptripsorganizer.entity.bill.Bill;
+import com.sroka.grouptripsorganizer.entity.bill.BillCategory;
+import com.sroka.grouptripsorganizer.entity.bill.BillShare;
+import com.sroka.grouptripsorganizer.entity.bill.Currency;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
+import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
 import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,18 +18,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.ACTIVE;
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
+import static com.sroka.grouptripsorganizer.entity.bill.BillCategory.BILL_CATEGORIES;
+import static com.sroka.grouptripsorganizer.entity.bill.Currency.CURRENCIES;
+import static com.sroka.grouptripsorganizer.entity.bill.SplitCategory.EQUALLY;
+import static java.math.RoundingMode.UP;
 
 @Component
 @RequiredArgsConstructor
@@ -39,6 +48,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final BillRepository billRepository;
+    private final BillShareRepository billShareRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -52,6 +63,7 @@ public class DataInitializer implements CommandLineRunner {
         initializeUsers();
         initializeGroups();
         initializeParticipants();
+        initializeBills();
         log.info("Data initialized.");
     }
 
@@ -124,5 +136,52 @@ public class DataInitializer implements CommandLineRunner {
     private LocalDate generateRandomDateInPeriodOfTime(LocalDate startDate, LocalDate endDate) {
         long days = ChronoUnit.DAYS.between(startDate, endDate);
         return startDate.plusDays(new Random().nextInt((int) days + 1));
+    }
+
+    private void initializeBills() {
+        groupRepository.findAll().forEach(this::addBill);
+    }
+
+    private void addBill(Group group) {
+        Set<User> users = group.getParticipants();
+        User owner = group.getOwner();
+
+        BigDecimal billTotalAmount = getRandomBillTotalAmount();
+        String billName = "Bill" + owner.getId();
+        BillCategory billCategory = getRandomBillCategory();
+        Currency billCurrency = getRandomBillCurrency();
+        LocalDate billDate = generateRandomDateInPeriodOfTime(LocalDate.of(2021, 1, 1), LocalDate.now());
+        BigDecimal billShareAmount = billTotalAmount.divide(new BigDecimal(users.size()), 2, UP);
+
+        Bill newBill = new Bill(billName, billCategory, owner, billDate, billTotalAmount,
+                billCurrency, EQUALLY, group, new ArrayList<>(), false);
+        Bill savedBill = billRepository.save(newBill);
+
+        users.forEach(user -> {
+            BillShare billShare = new BillShare(owner, user, billShareAmount, savedBill);
+            if (owner.equals(user)) {
+                billShare.setPaid(true);
+            }
+            billShareRepository.save(billShare);
+        });
+    }
+
+    private BigDecimal getRandomBillTotalAmount() {
+        BigInteger bigInteger = BigInteger.probablePrime(10, new Random());
+        return new BigDecimal(bigInteger);
+    }
+
+    private BillCategory getRandomBillCategory() {
+        int size = BILL_CATEGORIES.size();
+        Random random = new Random();
+
+        return BILL_CATEGORIES.get(random.nextInt(size));
+    }
+
+    private Currency getRandomBillCurrency() {
+        int size = CURRENCIES.size();
+        Random random = new Random();
+
+        return CURRENCIES.get(random.nextInt(size));
     }
 }
