@@ -2,6 +2,7 @@ package com.sroka.grouptripsorganizer.entity.group;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
+import com.sroka.grouptripsorganizer.entity.note.Note;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.UserAlreadyInThisGroupException;
 import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
@@ -37,6 +38,9 @@ public class Group extends BaseEntity {
 
     @OneToMany(mappedBy = "group", cascade = ALL)
     private Set<Bill> bills;
+
+    @OneToMany(mappedBy = "group", cascade = ALL)
+    private Set<Note> notes;
 
     public Group(String name, User owner) {
         this.name = name;

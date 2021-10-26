@@ -32,13 +32,13 @@ public class BillShareService {
     private final BillShareRepository billShareRepository;
     private final BillRepository billRepository;
 
-    public List<BillShareDto> splitBill(BillShareCreateDto billShareCreateDto, Long creatorId) {
-        User creator = userRepository.getById(creatorId);
+    public List<BillShareDto> splitBill(BillShareCreateDto billShareCreateDto, Long executorId) {
+        User executor = userRepository.getById(executorId);
         List<Long> debtorsIds = billShareCreateDto.getDebtorsIds();
         Long billId = billShareCreateDto.getBillId();
 
         Bill bill = billRepository.getById(billId);
-        validateBillShareUser(creator, bill.getGroup());
+        validateBillShareUser(executor, bill.getGroup());
 
         List<BillShareDto> billShareDtoList = new ArrayList<>();
 
@@ -49,12 +49,12 @@ public class BillShareService {
         return billShareDtoList;
     }
 
-    public List<BillShareDto> markBillShareAsPaid(Long billShareId, Long currentUserId) {
+    public List<BillShareDto> markBillShareAsPaid(Long billShareId, Long executorId) {
         BillShare billShare = billShareRepository.getById(billShareId);
         Bill bill = billShare.getBill();
-        User currentUser = userRepository.getById(currentUserId);
+        User executor = userRepository.getById(executorId);
 
-        validateBillShareUser(currentUser, bill.getGroup());
+        validateBillShareUser(executor, bill.getGroup());
 
         billShare.setPaid(true);
 
@@ -88,8 +88,8 @@ public class BillShareService {
         return billShareDtoList;
     }
 
-    private void validateBillShareUser(User user, Group group) {
-        if (!group.getParticipants().contains(user)) {
+    private void validateBillShareUser(User executor, Group group) {
+        if (!group.getParticipants().contains(executor)) {
             throw new UserNotInThisGroupException();
         }
     }

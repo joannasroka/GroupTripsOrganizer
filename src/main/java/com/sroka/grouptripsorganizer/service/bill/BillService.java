@@ -25,12 +25,12 @@ public class BillService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
-    public BillDto create(BillCreateDto billCreateDto, Long creatorId) {
+    public BillDto create(BillCreateDto billCreateDto, Long executorId) {
         Group group = groupRepository.getById(billCreateDto.getGroupId());
-        User creator = userRepository.getById(creatorId);
+        User executor = userRepository.getById(executorId);
         User payer = userRepository.getById(billCreateDto.getPayerId());
 
-        validate(creator, payer, group);
+        validate(executor, payer, group);
 
         Bill newBill = billMapper.convertToEntity(billCreateDto);
         newBill.setGroup(group);
@@ -42,8 +42,8 @@ public class BillService {
         return billMapper.convertToDto(savedBill);
     }
 
-    private void validate(User creator, User payer, Group group) {
-        if (!group.getParticipants().contains(creator) || !group.getParticipants().contains(payer)) {
+    private void validate(User executor, User payer, Group group) {
+        if (!group.getParticipants().contains(executor) || !group.getParticipants().contains(payer)) {
             throw new UserNotInThisGroupException();
         }
     }
