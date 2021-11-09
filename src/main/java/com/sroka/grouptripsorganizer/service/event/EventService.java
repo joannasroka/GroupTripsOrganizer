@@ -35,6 +35,7 @@ public class EventService {
         validate(executor, group);
 
         Event newEvent = eventMapper.convertToEntity(eventCreateDto);
+        newEvent.setGroup(group);
         newEvent = eventRepository.save(newEvent);
 
         return eventMapper.convertToDto(newEvent);

@@ -44,6 +44,7 @@ public class DocumentService {
 
         Document newDocument = documentMapper.convertToEntity(documentCreateDto);
         newDocument.setFile(file.getBytes());
+        newDocument.setGroup(group);
         newDocument = documentRepository.save(newDocument);
 
         return documentMapper.convertToDto(newDocument);
