@@ -29,7 +29,7 @@ public class NoteController extends BaseController {
     private final AuthenticationContextService authenticationContextService;
 
     private static final int MAX_ALLOWED_NOTES_PER_PAGE = 25;
-    private static final Set<String> ALLOWED_BLOOD_MEASUREMENT_SORTING_PARAMS = Set.of(TITLE_FIELD_NAME);
+    private static final Set<String> ALLOWED_NOTE_SORTING_PARAMS = Set.of(TITLE_FIELD_NAME);
 
     @PreAuthorize("permitAll()")
     @PostMapping
@@ -62,7 +62,7 @@ public class NoteController extends BaseController {
     public Page<NoteDto> getNotesByGroup(@PathVariable Long groupId,
                                          @PageableDefault(sort = TITLE_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
         pageSizeValidation(pageable, MAX_ALLOWED_NOTES_PER_PAGE);
-        sortParametersValidation(pageable, ALLOWED_BLOOD_MEASUREMENT_SORTING_PARAMS);
+        sortParametersValidation(pageable, ALLOWED_NOTE_SORTING_PARAMS);
 
         Long currentUserId = authenticationContextService.getCurrentUserId();
 

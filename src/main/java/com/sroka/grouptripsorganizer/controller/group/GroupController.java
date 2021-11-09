@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class GroupController extends BaseController {
-    private static final int MAX_ALLOWED_BLOOD_GROUPS_PER_PAGE = 10;
+    private static final int MAX_ALLOWED_GROUPS_PER_PAGE = 10;
     private static final Set<String> ALLOWED_GROUPS_SORTING_PARAMS = Set.of(NAME_FIELD_NAME);
 
     private final GroupService groupService;
@@ -57,7 +57,7 @@ public class GroupController extends BaseController {
     @PreAuthorize("permitAll()")
     @GetMapping
     public Page<GroupDto> getAllOwnGroups(@PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
-        pageSizeValidation(pageable, MAX_ALLOWED_BLOOD_GROUPS_PER_PAGE);
+        pageSizeValidation(pageable, MAX_ALLOWED_GROUPS_PER_PAGE);
         sortParametersValidation(pageable, ALLOWED_GROUPS_SORTING_PARAMS);
 
         Long userId = authenticationContextService.getCurrentUserId();
