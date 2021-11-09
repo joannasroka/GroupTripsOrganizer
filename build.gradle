@@ -27,6 +27,7 @@ ext {
 	mockitoInlineVersion = "3.10.0"
 	modelMapperVersion = "2.4.4"
 	passayVersion = "1.6.0"
+	sanitizerVersion = "20211018.2"
 	springdocOpenApiVersion = "1.5.10"
 }
 
@@ -46,6 +47,7 @@ dependencies {
 	implementation 'org.springframework.retry:spring-retry'
 	implementation "org.apache.commons:commons-csv:$commonsCsvVersion"
 	implementation "com.github.dhorions:boxable:$boxableVersion"
+	implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:$sanitizerVersion"
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'

@@ -6,12 +6,14 @@ import com.sroka.grouptripsorganizer.dto.note.NoteUpdateDto;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.note.Note;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.NoteMapper;
 import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
 import com.sroka.grouptripsorganizer.repository.note.NoteRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.owasp.html.PolicyFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,13 @@ public class NoteService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final NoteMapper noteMapper;
+    private final PolicyFactory policy;
 
     public NoteDto create(NoteCreateDto noteCreateDto, Long executorId) {
         User executor = userRepository.getById(executorId);
         Group group = groupRepository.getById(noteCreateDto.getGroupId());
 
+        noteCreateDto.setContent(sanitizeNote(noteCreateDto.getContent()));
         validate(executor, group);
 
         Note note = noteMapper.convertToEntity(noteCreateDto);
@@ -45,6 +49,7 @@ public class NoteService {
         Note noteToUpdate = noteRepository.getById(noteId);
         Group group = noteToUpdate.getGroup();
 
+        noteUpdateDto.setContent(sanitizeNote(noteUpdateDto.getContent()));
         validate(executor, group);
 
         updateNoteFields(noteToUpdate, noteUpdateDto);
@@ -81,9 +86,13 @@ public class NoteService {
         return noteMapper.convertToDto(note);
     }
 
+    private String sanitizeNote(String untrustedNote) {
+        return policy.sanitize(untrustedNote);
+    }
+
     private void validate(User executor, Group group) {
         if (!group.getParticipants().contains(executor)) {
-            throw new UserNotInThisGroupException();
+            throw new DatabaseEntityNotFoundException();
         }
     }
 

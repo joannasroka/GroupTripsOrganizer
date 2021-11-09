@@ -5,6 +5,7 @@ import com.sroka.grouptripsorganizer.dto.bill.BillDto;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.BillMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
@@ -44,7 +45,7 @@ public class BillService {
 
     private void validate(User executor, User payer, Group group) {
         if (!group.getParticipants().contains(executor) || !group.getParticipants().contains(payer)) {
-            throw new UserNotInThisGroupException();
+            throw new DatabaseEntityNotFoundException();
         }
     }
 }

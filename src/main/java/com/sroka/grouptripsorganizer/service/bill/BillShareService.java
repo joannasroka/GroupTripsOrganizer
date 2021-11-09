@@ -7,6 +7,7 @@ import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.BillShareForThisUserAlreadyExistsException;
+import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.BillShareMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
@@ -90,7 +91,7 @@ public class BillShareService {
 
     private void validateBillShareUser(User executor, Group group) {
         if (!group.getParticipants().contains(executor)) {
-            throw new UserNotInThisGroupException();
+            throw new DatabaseEntityNotFoundException();
         }
     }
 
