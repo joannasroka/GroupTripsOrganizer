@@ -36,8 +36,8 @@ public class DocumentController extends BaseController {
     @PreAuthorize("permitAll()")
     @PostMapping
     @ResponseStatus(CREATED)
-    public DocumentDto createDocument(@Valid @RequestBody DocumentCreateDto documentCreateDto,
-                                      @RequestParam("file") MultipartFile file) throws IOException {
+    public DocumentDto createDocument(@Valid @RequestPart("document") DocumentCreateDto documentCreateDto,
+                                      @RequestPart("file") MultipartFile file) throws IOException {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
         return documentService.create(documentCreateDto, file, currentUserId);
