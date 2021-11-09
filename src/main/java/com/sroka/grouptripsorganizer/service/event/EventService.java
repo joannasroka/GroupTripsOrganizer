@@ -7,6 +7,7 @@ import com.sroka.grouptripsorganizer.entity.event.Event;
 import com.sroka.grouptripsorganizer.entity.group.Group;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
+import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.EventMapper;
 import com.sroka.grouptripsorganizer.repository.event.EventRepository;
 import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
@@ -15,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -28,11 +31,12 @@ public class EventService {
 
     private final EventMapper eventMapper;
 
-    public EventDto create(EventCreateDto eventCreateDto, Long executorId) {
+    public EventDto create(EventCreateDto eventCreateDto, Long executorId, Errors errors) {
         Group group = groupRepository.getById(eventCreateDto.getGroupId());
         User executor = userRepository.getById(executorId);
 
         validate(executor, group);
+        validateEventDate(eventCreateDto.getStartDateTime(), eventCreateDto.getEndDateTime(), errors);
 
         Event newEvent = eventMapper.convertToEntity(eventCreateDto);
         newEvent.setGroup(group);
@@ -41,12 +45,13 @@ public class EventService {
         return eventMapper.convertToDto(newEvent);
     }
 
-    public EventDto update(EventUpdateDto eventUpdateDto, Long eventId, Long executorId) {
+    public EventDto update(EventUpdateDto eventUpdateDto, Long eventId, Long executorId, Errors errors) {
         Event eventToUpdate = eventRepository.getById(eventId);
         Group group = eventToUpdate.getGroup();
         User executor = userRepository.getById(executorId);
 
         validate(executor, group);
+        validateEventDate(eventUpdateDto.getStartDateTime(), eventUpdateDto.getEndDateTime(), errors);
 
         eventToUpdate.setName(eventUpdateDto.getName());
         eventToUpdate.setDescription(eventUpdateDto.getDescription());
@@ -88,6 +93,24 @@ public class EventService {
     private void validate(User executor, Group group) {
         if (!group.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
+        }
+    }
+
+    private void validateEventDate(LocalDateTime startDateTime, LocalDateTime endDateTime, Errors errors) {
+        if (!startDateTime.isAfter(LocalDateTime.now())) {
+            errors.rejectValue("startDateTime", "error.onlyFutureDates", "error.onlyFutureDates");
+        }
+        if (endDateTime != null && !endDateTime.isAfter(LocalDateTime.now())) {
+            errors.rejectValue("endDateTime", "error.onlyFutureDates", "error.onlyFutureDates");
+        }
+
+        if (endDateTime != null && startDateTime.isAfter(endDateTime)) {
+            errors.rejectValue("startDateTime", "error.startDateAfterEndDate", "error.startDateAfterEndDate");
+            errors.rejectValue("endDateTime", "error.startDateAfterEndDate", "error.startDateAfterEndDate");
+        }
+
+        if (errors.hasErrors()) {
+            throw new ValidationException(errors);
         }
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,19 +35,20 @@ public class EventController extends BaseController {
     @PreAuthorize("permitAll()")
     @PostMapping
     @ResponseStatus(CREATED)
-    public EventDto createEvent(@Valid @RequestBody EventCreateDto eventCreateDto) {
+    public EventDto createEvent(@Valid @RequestBody EventCreateDto eventCreateDto, Errors errors) {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return eventService.create(eventCreateDto, currentUserId);
+        return eventService.create(eventCreateDto, currentUserId, errors);
     }
 
     @PreAuthorize("permitAll()")
     @PutMapping("/{eventId}")
     public EventDto updateEvent(@PathVariable Long eventId,
-                                @RequestBody @Valid EventUpdateDto eventUpdateDto) {
+                                @RequestBody @Valid EventUpdateDto eventUpdateDto,
+                                Errors errors) {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return eventService.update(eventUpdateDto, eventId, currentUserId);
+        return eventService.update(eventUpdateDto, eventId, currentUserId, errors);
     }
 
     @PreAuthorize("permitAll()")
