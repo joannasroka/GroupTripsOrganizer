@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.MimeType;
 
 import javax.persistence.*;
 
@@ -22,10 +23,13 @@ public class Document extends BaseEntity {
     private String name;
 
     @Lob
-    @Column(name = "file", columnDefinition="BLOB")
+    @Column(name = "file", columnDefinition = "BLOB")
     private byte[] file;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+
+    @Column(name = "type", nullable = false, length = 50)
+    private String type;
 }

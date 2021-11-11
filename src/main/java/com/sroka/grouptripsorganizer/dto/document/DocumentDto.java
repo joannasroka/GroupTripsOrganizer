@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.MimeType;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +21,7 @@ public class DocumentDto {
 
     @Schema(required = true)
     private Long groupId;
+
+    @Schema(required = true)
+    private String type;
 }

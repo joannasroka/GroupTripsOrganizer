@@ -45,6 +45,7 @@ public class DocumentService {
         Document newDocument = documentMapper.convertToEntity(documentCreateDto);
         newDocument.setFile(file.getBytes());
         newDocument.setGroup(group);
+        newDocument.setType(file.getContentType());
         newDocument = documentRepository.save(newDocument);
 
         return documentMapper.convertToDto(newDocument);
@@ -57,7 +58,7 @@ public class DocumentService {
 
         validate(executor, group);
 
-        documentToUpdate.setName(documentToUpdate.getName());
+        documentToUpdate.setName(documentUpdateDto.getName());
 
         return documentMapper.convertToDto(documentToUpdate);
     }

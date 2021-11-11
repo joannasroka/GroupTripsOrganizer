@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.MimeType;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
