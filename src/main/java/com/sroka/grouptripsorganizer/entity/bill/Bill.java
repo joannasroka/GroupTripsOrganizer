@@ -24,6 +24,8 @@ import static javax.persistence.EnumType.STRING;
 @AllArgsConstructor
 // eksport do PDF/ CSV?
 public class Bill extends BaseEntity {
+    public static final String DATE_FIELD_NAME = "date";
+
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 

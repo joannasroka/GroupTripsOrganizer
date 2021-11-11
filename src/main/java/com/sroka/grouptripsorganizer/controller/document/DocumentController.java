@@ -30,7 +30,7 @@ public class DocumentController extends BaseController {
     private final DocumentService documentService;
     private final AuthenticationContextService authenticationContextService;
 
-    private static final int MAX_ALLOWED_DOCUMENTS_PER_PAGE = 10;
+    private static final int MAX_ALLOWED_DOCUMENTS_PER_PAGE = 25;
     private static final Set<String> ALLOWED_DOCUMENT_SORTING_PARAMS = Set.of(NAME_FIELD_NAME);
 
     @PreAuthorize("permitAll()")
