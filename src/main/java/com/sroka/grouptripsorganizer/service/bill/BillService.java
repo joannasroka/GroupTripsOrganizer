@@ -3,13 +3,12 @@ package com.sroka.grouptripsorganizer.service.bill;
 import com.sroka.grouptripsorganizer.dto.bill.BillCreateDto;
 import com.sroka.grouptripsorganizer.dto.bill.BillDto;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
-import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.BillMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
-import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,17 +23,17 @@ public class BillService {
 
     private final BillRepository billRepository;
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
+    private final TripRepository tripRepository;
 
     public BillDto create(BillCreateDto billCreateDto, Long executorId) {
-        Group group = groupRepository.getById(billCreateDto.getGroupId());
+        Trip trip = tripRepository.getById(billCreateDto.getTripId());
         User executor = userRepository.getById(executorId);
         User payer = userRepository.getById(billCreateDto.getPayerId());
 
-        validate(executor, payer, group);
+        validate(executor, payer, trip);
 
         Bill newBill = billMapper.convertToEntity(billCreateDto);
-        newBill.setGroup(group);
+        newBill.setTrip(trip);
         newBill.setPayer(payer);
         newBill.setPaid(false);
 
@@ -43,8 +42,8 @@ public class BillService {
         return billMapper.convertToDto(savedBill);
     }
 
-    private void validate(User executor, User payer, Group group) {
-        if (!group.getParticipants().contains(executor) || !group.getParticipants().contains(payer)) {
+    private void validate(User executor, User payer, Trip trip) {
+        if (!trip.getParticipants().contains(executor) || !trip.getParticipants().contains(payer)) {
             throw new DatabaseEntityNotFoundException();
         }
     }

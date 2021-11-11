@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.entity.event;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +32,6 @@ public class Event extends BaseEntity {
     private LocalDateTime endDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "trip_id", nullable = false)
+    private Trip trip;
 }

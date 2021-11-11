@@ -5,11 +5,11 @@ import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillCategory;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import com.sroka.grouptripsorganizer.entity.bill.Currency;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
 import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
-import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class DataInitializer implements CommandLineRunner {
     private static final int ACTIVE_USER_AMOUNT = 9;
     private static final int REGISTERED_USER_AMOUNT = 3;
 
-    private final GroupRepository groupRepository;
+    private final TripRepository tripRepository;
     private final UserRepository userRepository;
     private final BillRepository billRepository;
     private final BillShareRepository billShareRepository;
@@ -97,28 +97,28 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeGroups() {
-        List<Group> groups = new ArrayList<>();
+        List<Trip> trips = new ArrayList<>();
 
-        IntStream.range(0, GROUPS_AMOUNT).forEach(i -> groups.add(createGroup(i)));
-        groupRepository.saveAll(Stream.of(groups).flatMap(Collection::stream).collect(Collectors.toList()));
+        IntStream.range(0, GROUPS_AMOUNT).forEach(i -> trips.add(createGroup(i)));
+        tripRepository.saveAll(Stream.of(trips).flatMap(Collection::stream).collect(Collectors.toList()));
     }
 
 
-    private Group createGroup(int number) {
+    private Trip createGroup(int number) {
         String name = "Group" + number;
 
         List<User> users = userRepository.findAllByAccountStatus(ACTIVE);
 
-        return new Group(name, users.get(number % users.size()));
+        return new Trip(name, users.get(number % users.size()));
     }
 
     private void initializeParticipants() {
-        groupRepository.findAll().forEach(this::addParticipants);
+        tripRepository.findAll().forEach(this::addParticipants);
     }
 
-    private void addParticipants(Group group) {
+    private void addParticipants(Trip trip) {
         List<User> users = userRepository.findAll();
-        users.removeAll(group.getParticipants());
+        users.removeAll(trip.getParticipants());
 
         Random rand = new Random();
         for (int i = 0; i < PARTICIPANTS_AMOUNT; i++) {
@@ -127,8 +127,8 @@ public class DataInitializer implements CommandLineRunner {
             }
             int randomUserNumber = rand.nextInt(users.size());
             User newParticipant = users.get(randomUserNumber);
-            group.addParticipant(newParticipant);
-            log.info("Adding user: " + newParticipant + " to group: " + group);
+            trip.addParticipant(newParticipant);
+            log.info("Adding user: " + newParticipant + " to group: " + trip);
             users.remove(newParticipant);
         }
     }
@@ -139,12 +139,12 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeBills() {
-        groupRepository.findAll().forEach(this::addBill);
+        tripRepository.findAll().forEach(this::addBill);
     }
 
-    private void addBill(Group group) {
-        Set<User> users = group.getParticipants();
-        User owner = group.getOwner();
+    private void addBill(Trip trip) {
+        Set<User> users = trip.getParticipants();
+        User owner = trip.getOwner();
 
         BigDecimal billTotalAmount = getRandomBillTotalAmount();
         String billName = "Bill" + owner.getId();
@@ -154,7 +154,7 @@ public class DataInitializer implements CommandLineRunner {
         BigDecimal billShareAmount = billTotalAmount.divide(new BigDecimal(users.size()), 2, UP);
 
         Bill newBill = new Bill(billName, billCategory, owner, billDate, billTotalAmount,
-                billCurrency, EQUALLY, group, new ArrayList<>(), false);
+                billCurrency, EQUALLY, trip, new ArrayList<>(), false);
         Bill savedBill = billRepository.save(newBill);
 
         users.forEach(user -> {

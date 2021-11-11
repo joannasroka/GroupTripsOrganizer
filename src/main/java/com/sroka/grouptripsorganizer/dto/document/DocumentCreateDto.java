@@ -21,5 +21,5 @@ public class DocumentCreateDto {
 
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
-    private Long groupId;
+    private Long tripId;
 }

@@ -3,13 +3,12 @@ package com.sroka.grouptripsorganizer.service.note;
 import com.sroka.grouptripsorganizer.dto.note.NoteCreateDto;
 import com.sroka.grouptripsorganizer.dto.note.NoteDto;
 import com.sroka.grouptripsorganizer.dto.note.NoteUpdateDto;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.note.Note;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
-import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.NoteMapper;
-import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
 import com.sroka.grouptripsorganizer.repository.note.NoteRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +25,19 @@ import javax.transaction.Transactional;
 public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
+    private final TripRepository tripRepository;
     private final NoteMapper noteMapper;
     private final PolicyFactory policy;
 
     public NoteDto create(NoteCreateDto noteCreateDto, Long executorId) {
         User executor = userRepository.getById(executorId);
-        Group group = groupRepository.getById(noteCreateDto.getGroupId());
+        Trip trip = tripRepository.getById(noteCreateDto.getTripId());
 
         noteCreateDto.setContent(sanitizeNote(noteCreateDto.getContent()));
-        validate(executor, group);
+        validate(executor, trip);
 
         Note note = noteMapper.convertToEntity(noteCreateDto);
-        note.setGroup(group);
+        note.setTrip(trip);
         note = noteRepository.save(note);
 
         return noteMapper.convertToDto(note);
@@ -47,10 +46,10 @@ public class NoteService {
     public NoteDto update(NoteUpdateDto noteUpdateDto, Long noteId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Note noteToUpdate = noteRepository.getById(noteId);
-        Group group = noteToUpdate.getGroup();
+        Trip trip = noteToUpdate.getTrip();
 
         noteUpdateDto.setContent(sanitizeNote(noteUpdateDto.getContent()));
-        validate(executor, group);
+        validate(executor, trip);
 
         updateNoteFields(noteToUpdate, noteUpdateDto);
 
@@ -60,28 +59,28 @@ public class NoteService {
     public void delete(Long noteId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Note noteToDelete = noteRepository.getById(noteId);
-        Group group = noteToDelete.getGroup();
+        Trip trip = noteToDelete.getTrip();
 
-        validate(executor, group);
+        validate(executor, trip);
 
         noteRepository.delete(noteToDelete);
     }
 
-    public Page<NoteDto> getByGroup(Long groupId, Long executorId, Pageable pageable) {
+    public Page<NoteDto> getByTrip(Long tripId, Long executorId, Pageable pageable) {
         User executor = userRepository.getById(executorId);
-        Group group = groupRepository.getById(groupId);
-        validate(executor, group);
+        Trip trip = tripRepository.getById(tripId);
+        validate(executor, trip);
 
-        Page<Note> notes = noteRepository.findAllByGroup(group, pageable);
+        Page<Note> notes = noteRepository.findAllByTrip(trip, pageable);
         return notes.map(noteMapper::convertToDto);
     }
 
     public NoteDto getById(Long noteId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Note note = noteRepository.getById(noteId);
-        Group group = note.getGroup();
+        Trip trip = note.getTrip();
 
-        validate(executor, group);
+        validate(executor, trip);
 
         return noteMapper.convertToDto(note);
     }
@@ -90,8 +89,8 @@ public class NoteService {
         return policy.sanitize(untrustedNote);
     }
 
-    private void validate(User executor, Group group) {
-        if (!group.getParticipants().contains(executor)) {
+    private void validate(User executor, Trip trip) {
+        if (!trip.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
         }
     }

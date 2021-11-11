@@ -32,5 +32,5 @@ public class EventCreateDto {
 
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
-    Long groupId;
+    private Long tripId;
 }

@@ -1,12 +1,11 @@
 package com.sroka.grouptripsorganizer.entity.document;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.util.MimeType;
 
 import javax.persistence.*;
 
@@ -27,8 +26,8 @@ public class Document extends BaseEntity {
     private byte[] file;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "trip_id", nullable = false)
+    private Trip trip;
 
     @Column(name = "type", nullable = false, length = 50)
     private String type;

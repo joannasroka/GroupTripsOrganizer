@@ -59,16 +59,16 @@ public class EventController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/groups/{groupId}")
+    @GetMapping("/trips/{tripId}")
     @CustomPageable
-    public Page<EventDto> getEventsByGroup(@PathVariable Long groupId,
-                                           @PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
+    public Page<EventDto> getEventsByTrip(@PathVariable Long tripId,
+                                          @PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
         pageSizeValidation(pageable, MAX_ALLOWED_EVENTS_PER_PAGE);
         sortParametersValidation(pageable, ALLOWED_EVENT_SORTING_PARAMS);
 
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return eventService.getByGroup(groupId, currentUserId, pageable);
+        return eventService.getByTrip(tripId, currentUserId, pageable);
     }
 
     @PreAuthorize("permitAll()")

@@ -57,16 +57,16 @@ public class NoteController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/groups/{groupId}")
+    @GetMapping("/trips/{tripId}")
     @CustomPageable
-    public Page<NoteDto> getNotesByGroup(@PathVariable Long groupId,
-                                         @PageableDefault(sort = TITLE_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
+    public Page<NoteDto> getNotesByTrip(@PathVariable Long tripId,
+                                        @PageableDefault(sort = TITLE_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
         pageSizeValidation(pageable, MAX_ALLOWED_NOTES_PER_PAGE);
         sortParametersValidation(pageable, ALLOWED_NOTE_SORTING_PARAMS);
 
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return noteService.getByGroup(groupId, currentUserId, pageable);
+        return noteService.getByTrip(tripId, currentUserId, pageable);
     }
 
     @PreAuthorize("permitAll()")

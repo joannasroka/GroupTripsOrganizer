@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.repository.event;
 
 import com.sroka.grouptripsorganizer.entity.event.Event;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,5 +12,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         return findById(id).orElseThrow(DatabaseEntityNotFoundException::new);
     }
 
-    Page<Event> findAllByGroup(Group group, Pageable pageable);
+    Page<Event> findAllByTrip(Trip trip, Pageable pageable);
 }

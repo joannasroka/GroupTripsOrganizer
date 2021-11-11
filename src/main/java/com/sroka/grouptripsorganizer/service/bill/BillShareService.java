@@ -4,11 +4,10 @@ import com.sroka.grouptripsorganizer.dto.bill.BillShareCreateDto;
 import com.sroka.grouptripsorganizer.dto.bill.BillShareDto;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.BillShareForThisUserAlreadyExistsException;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
-import com.sroka.grouptripsorganizer.exception.UserNotInThisGroupException;
 import com.sroka.grouptripsorganizer.mapper.BillShareMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
 import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
@@ -39,7 +38,7 @@ public class BillShareService {
         Long billId = billShareCreateDto.getBillId();
 
         Bill bill = billRepository.getById(billId);
-        validateBillShareUser(executor, bill.getGroup());
+        validateBillShareUser(executor, bill.getTrip());
 
         List<BillShareDto> billShareDtoList = new ArrayList<>();
 
@@ -55,7 +54,7 @@ public class BillShareService {
         Bill bill = billShare.getBill();
         User executor = userRepository.getById(executorId);
 
-        validateBillShareUser(executor, bill.getGroup());
+        validateBillShareUser(executor, bill.getTrip());
 
         billShare.setPaid(true);
 
@@ -75,7 +74,7 @@ public class BillShareService {
         debtorsIds.forEach(debtorId -> {
             User debtor = userRepository.getById(debtorId);
 
-            validateBillShareUser(debtor, bill.getGroup());
+            validateBillShareUser(debtor, bill.getTrip());
             validateBillShareDebtor(debtor, bill);
 
             BillShare billShare = new BillShare(bill.getPayer(), debtor, amountToSplit, bill);
@@ -89,8 +88,8 @@ public class BillShareService {
         return billShareDtoList;
     }
 
-    private void validateBillShareUser(User executor, Group group) {
-        if (!group.getParticipants().contains(executor)) {
+    private void validateBillShareUser(User executor, Trip trip) {
+        if (!trip.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
         }
     }

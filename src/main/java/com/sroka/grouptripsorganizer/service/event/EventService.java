@@ -4,13 +4,13 @@ import com.sroka.grouptripsorganizer.dto.event.EventCreateDto;
 import com.sroka.grouptripsorganizer.dto.event.EventDto;
 import com.sroka.grouptripsorganizer.dto.event.EventUpdateDto;
 import com.sroka.grouptripsorganizer.entity.event.Event;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.EventMapper;
 import com.sroka.grouptripsorganizer.repository.event.EventRepository;
-import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
+import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,20 +26,20 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
-    private final GroupRepository groupRepository;
+    private final TripRepository tripRepository;
     private final UserRepository userRepository;
 
     private final EventMapper eventMapper;
 
     public EventDto create(EventCreateDto eventCreateDto, Long executorId, Errors errors) {
-        Group group = groupRepository.getById(eventCreateDto.getGroupId());
+        Trip trip = tripRepository.getById(eventCreateDto.getTripId());
         User executor = userRepository.getById(executorId);
 
-        validate(executor, group);
+        validate(executor, trip);
         validateEventDate(eventCreateDto.getStartDateTime(), eventCreateDto.getEndDateTime(), errors);
 
         Event newEvent = eventMapper.convertToEntity(eventCreateDto);
-        newEvent.setGroup(group);
+        newEvent.setTrip(trip);
         newEvent = eventRepository.save(newEvent);
 
         return eventMapper.convertToDto(newEvent);
@@ -47,10 +47,10 @@ public class EventService {
 
     public EventDto update(EventUpdateDto eventUpdateDto, Long eventId, Long executorId, Errors errors) {
         Event eventToUpdate = eventRepository.getById(eventId);
-        Group group = eventToUpdate.getGroup();
+        Trip trip = eventToUpdate.getTrip();
         User executor = userRepository.getById(executorId);
 
-        validate(executor, group);
+        validate(executor, trip);
         validateEventDate(eventUpdateDto.getStartDateTime(), eventUpdateDto.getEndDateTime(), errors);
 
         eventToUpdate.setName(eventUpdateDto.getName());
@@ -64,34 +64,34 @@ public class EventService {
     public void delete(Long eventId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Event eventToDelete = eventRepository.getById(eventId);
-        Group group = eventToDelete.getGroup();
+        Trip trip = eventToDelete.getTrip();
 
-        validate(executor, group);
+        validate(executor, trip);
 
         eventRepository.delete(eventToDelete);
     }
 
-    public Page<EventDto> getByGroup(Long groupId, Long executorId, Pageable pageable) {
+    public Page<EventDto> getByTrip(Long tripId, Long executorId, Pageable pageable) {
         User executor = userRepository.getById(executorId);
-        Group group = groupRepository.getById(groupId);
-        validate(executor, group);
+        Trip trip = tripRepository.getById(tripId);
+        validate(executor, trip);
 
-        Page<Event> events = eventRepository.findAllByGroup(group, pageable);
+        Page<Event> events = eventRepository.findAllByTrip(trip, pageable);
         return events.map(eventMapper::convertToDto);
     }
 
     public EventDto getById(Long eventId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Event event = eventRepository.getById(eventId);
-        Group group = event.getGroup();
+        Trip trip = event.getTrip();
 
-        validate(executor, group);
+        validate(executor, trip);
 
         return eventMapper.convertToDto(event);
     }
 
-    private void validate(User executor, Group group) {
-        if (!group.getParticipants().contains(executor)) {
+    private void validate(User executor, Trip trip) {
+        if (!trip.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
         }
     }

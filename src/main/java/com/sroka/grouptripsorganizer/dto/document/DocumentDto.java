@@ -20,7 +20,7 @@ public class DocumentDto {
     private byte[] file;
 
     @Schema(required = true)
-    private Long groupId;
+    private Long tripId;
 
     @Schema(required = true)
     private String type;

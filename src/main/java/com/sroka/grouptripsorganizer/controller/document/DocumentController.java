@@ -60,16 +60,16 @@ public class DocumentController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/groups/{groupId}")
+    @GetMapping("/trips/{tripId}")
     @CustomPageable
-    public Page<DocumentDto> getDocumentsByGroup(@PathVariable Long groupId,
-                                                 @PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
+    public Page<DocumentDto> getDocumentsByTrip(@PathVariable Long tripId,
+                                                @PageableDefault(sort = NAME_FIELD_NAME) @Parameter(hidden = true) Pageable pageable) {
         pageSizeValidation(pageable, MAX_ALLOWED_DOCUMENTS_PER_PAGE);
         sortParametersValidation(pageable, ALLOWED_DOCUMENT_SORTING_PARAMS);
 
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return documentService.getByGroup(groupId, currentUserId, pageable);
+        return documentService.getByTrip(tripId, currentUserId, pageable);
     }
 
     @PreAuthorize("permitAll()")

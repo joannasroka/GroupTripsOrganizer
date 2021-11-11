@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.dto.group;
+package com.sroka.grouptripsorganizer.dto.trip;
 
 import com.sroka.grouptripsorganizer.dto.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupWithParticipantsDto {
+public class TripWithParticipantsDto {
     @Schema(required = true)
     private Long id;
 

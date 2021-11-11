@@ -5,7 +5,7 @@ import com.sroka.grouptripsorganizer.entity.BaseEntity;
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,7 +50,7 @@ public class User extends BaseEntity {
     private AccountStatus accountStatus;
     
     @ManyToMany(mappedBy = "participants")
-    private Set<Group> groups;
+    private Set<Trip> trips;
 
     @OneToMany(mappedBy = "payer", cascade = ALL)
     private Set<Bill> paid;
@@ -70,6 +70,6 @@ public class User extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.accountStatus = REGISTERED;
-        groups = new HashSet<>();
+        trips = new HashSet<>();
     }
 }

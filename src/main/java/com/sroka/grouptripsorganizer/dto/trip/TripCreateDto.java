@@ -1,4 +1,4 @@
-package com.sroka.grouptripsorganizer.dto.group;
+package com.sroka.grouptripsorganizer.dto.trip;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GroupCreateDto {
+public class TripCreateDto {
 
     @NotBlank(message = "error.cannotBeBlank")
     @Length(min = 1, max = 30, message = "error.invalidFieldLength")

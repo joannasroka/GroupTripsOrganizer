@@ -27,5 +27,5 @@ public class EventDto {
     private LocalDateTime endDateTime;
 
     @Schema(required = true)
-    Long groupId;
+    private Long tripId;
 }

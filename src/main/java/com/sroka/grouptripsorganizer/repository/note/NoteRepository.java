@@ -1,6 +1,6 @@
 package com.sroka.grouptripsorganizer.repository.note;
 
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.note.Note;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -12,5 +12,5 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
         return findById(id).orElseThrow(DatabaseEntityNotFoundException::new);
     }
 
-    Page<Note> findAllByGroup(Group group, Pageable pageable);
+    Page<Note> findAllByTrip(Trip trip, Pageable pageable);
 }

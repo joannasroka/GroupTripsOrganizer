@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.entity.note;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +23,6 @@ public class Note extends BaseEntity {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "trip_id", nullable = false)
+    private Trip trip;
 }

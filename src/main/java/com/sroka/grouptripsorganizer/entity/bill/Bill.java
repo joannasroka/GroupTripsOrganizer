@@ -1,7 +1,7 @@
 package com.sroka.grouptripsorganizer.entity.bill;
 
 import com.sroka.grouptripsorganizer.entity.BaseEntity;
-import com.sroka.grouptripsorganizer.entity.group.Group;
+import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,8 +50,8 @@ public class Bill extends BaseEntity {
     private SplitCategory splitCategory;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "trip_id", nullable = false)
+    private Trip trip;
 
     @OneToMany(mappedBy = "bill", cascade = ALL)
     private List<BillShare> billShares;
