@@ -1,18 +1,14 @@
 package com.sroka.grouptripsorganizer.service.document;
 
-import com.sroka.grouptripsorganizer.dto.bill.BillCreateDto;
-import com.sroka.grouptripsorganizer.dto.bill.BillDto;
 import com.sroka.grouptripsorganizer.dto.document.DocumentCreateDto;
 import com.sroka.grouptripsorganizer.dto.document.DocumentDto;
 import com.sroka.grouptripsorganizer.dto.document.DocumentUpdateDto;
-import com.sroka.grouptripsorganizer.dto.note.NoteDto;
-import com.sroka.grouptripsorganizer.dto.note.NoteUpdateDto;
-import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.document.Document;
 import com.sroka.grouptripsorganizer.entity.group.Group;
-import com.sroka.grouptripsorganizer.entity.note.Note;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
+import com.sroka.grouptripsorganizer.exception.NotAllowedFileTypeException;
+import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.DocumentMapper;
 import com.sroka.grouptripsorganizer.repository.document.DocumentRepository;
 import com.sroka.grouptripsorganizer.repository.group.GroupRepository;
@@ -21,15 +17,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Set;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class DocumentService {
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of("text/plain", "image/jpeg", "image/png", "application/pdf", "application/x-pdf");
+
     private final DocumentRepository documentRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
@@ -40,12 +40,15 @@ public class DocumentService {
         Group group = groupRepository.getById(documentCreateDto.getGroupId());
         User executor = userRepository.getById(executorId);
 
+        String fileType = file.getContentType();
+
         validate(executor, group);
+        validateFileType(fileType);
 
         Document newDocument = documentMapper.convertToEntity(documentCreateDto);
         newDocument.setFile(file.getBytes());
         newDocument.setGroup(group);
-        newDocument.setType(file.getContentType());
+        newDocument.setType(fileType);
         newDocument = documentRepository.save(newDocument);
 
         return documentMapper.convertToDto(newDocument);
@@ -96,6 +99,12 @@ public class DocumentService {
     private void validate(User executor, Group group) {
         if (!group.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
+        }
+    }
+
+    private void validateFileType(String type) {
+        if (!ALLOWED_MIME_TYPES.contains(type)) {
+            throw new NotAllowedFileTypeException();
         }
     }
 }
