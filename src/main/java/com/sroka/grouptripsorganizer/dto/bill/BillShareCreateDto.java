@@ -1,6 +1,5 @@
 package com.sroka.grouptripsorganizer.dto.bill;
 
-import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +19,6 @@ public class BillShareCreateDto {
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
     private Long billId;
+
+    private List<Integer> percentages;
 }

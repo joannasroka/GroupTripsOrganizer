@@ -17,7 +17,7 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "trips")
 @Getter
 @Setter
 @NoArgsConstructor
