@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,4 +24,6 @@ public class BillShareCreateDto {
     private List<Integer> percentages;
 
     private List<Integer> shares;
+
+    private List<BigDecimal> exactAmounts;
 }

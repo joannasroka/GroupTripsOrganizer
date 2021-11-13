@@ -7,10 +7,7 @@ import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
-import com.sroka.grouptripsorganizer.exception.BillShareForThisUserAlreadyExistsException;
-import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
-import com.sroka.grouptripsorganizer.exception.InvalidPercentageBillShareException;
-import com.sroka.grouptripsorganizer.exception.InvalidShareBillShareException;
+import com.sroka.grouptripsorganizer.exception.*;
 import com.sroka.grouptripsorganizer.mapper.BillShareMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
 import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
@@ -25,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.UP;
 import static java.util.stream.Collectors.toList;
 
@@ -40,12 +38,15 @@ public class BillShareService {
 
     public List<BillShareDto> splitBill(BillShareCreateDto billShareCreateDto, Long executorId) {
         User executor = userRepository.getById(executorId);
+
         List<Long> debtorsIds = billShareCreateDto.getDebtorsIds();
         List<Integer> percentages = billShareCreateDto.getPercentages();
         List<Integer> shares = billShareCreateDto.getShares();
-        Long billId = billShareCreateDto.getBillId();
+        List<BigDecimal> exactAmounts = billShareCreateDto.getExactAmounts();
 
+        Long billId = billShareCreateDto.getBillId();
         Bill bill = billRepository.getById(billId);
+
         validateBillShareUser(executor, bill.getTrip());
 
         List<BillShareDto> billShareDtoList = new ArrayList<>();
@@ -59,6 +60,10 @@ public class BillShareService {
             case BY_SHARES -> {
                 validateBillShareByShares(billShareCreateDto);
                 billShareDtoList = splitBillByShares(bill, debtorsIds, shares);
+            }
+            case BY_EXACT_AMOUNTS -> {
+                validateBillShareByExactAmounts(billShareCreateDto);
+                billShareDtoList = splitBillByExactAmounts(bill, debtorsIds, exactAmounts);
             }
         }
 
@@ -140,7 +145,7 @@ public class BillShareService {
             billShares.add(billShare);
         });
 
-        if(percentagesSum.get() != 100) {
+        if (percentagesSum.get() != 100) {
             throw new InvalidPercentageBillShareException();
         }
 
@@ -183,6 +188,42 @@ public class BillShareService {
         return billShares.stream().map(billShareMapper::convertToDto).collect(toList());
     }
 
+    private List<BillShareDto> splitBillByExactAmounts(Bill bill, List<Long> debtorsIds, List<BigDecimal> exactAmounts) {
+        List<BillShare> billShares = new ArrayList<>();
+
+        BigDecimal exactAmountSum = exactAmounts.stream().reduce(ZERO, BigDecimal::add);
+
+        if (exactAmountSum.compareTo(bill.getTotalAmount()) != 0) {
+            throw new InvalidExactAmountBillShareException();
+        }
+
+        List<Pair<Long, BigDecimal>> debtorsAmounts = Streams.zip(debtorsIds.stream(), exactAmounts.stream(),
+                Pair::of).toList();
+
+        debtorsAmounts.forEach(debtorAmount -> {
+            User debtor = userRepository.getById(debtorAmount.getFirst());
+
+            validateBillShareUser(debtor, bill.getTrip());
+            validateBillShareDebtor(debtor, bill);
+
+            BigDecimal amount = debtorAmount.getSecond();
+            if (amount.compareTo(ZERO) <= 0) {
+                throw new InvalidExactAmountBillShareException();
+            }
+
+
+            BillShare billShare = new BillShare(bill.getPayer(), debtor, amount, bill);
+            if (debtor.equals(bill.getPayer())) {
+                billShare.setPaid(true);
+            }
+
+            billShares.add(billShare);
+        });
+
+        billShares.forEach(billShareRepository::save);
+        return billShares.stream().map(billShareMapper::convertToDto).collect(toList());
+    }
+
     private void validateBillShareUser(User executor, Trip trip) {
         if (!trip.getParticipants().contains(executor)) {
             throw new DatabaseEntityNotFoundException();
@@ -206,6 +247,13 @@ public class BillShareService {
         if (billShareCreateDto.getShares() == null
                 || (billShareCreateDto.getShares().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidShareBillShareException();
+        }
+    }
+
+    private void validateBillShareByExactAmounts(BillShareCreateDto billShareCreateDto) {
+        if (billShareCreateDto.getExactAmounts() == null
+                || (billShareCreateDto.getExactAmounts().size() != billShareCreateDto.getDebtorsIds().size())) {
+            throw new InvalidExactAmountBillShareException();
         }
     }
 }
