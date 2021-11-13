@@ -21,4 +21,6 @@ public class BillShareCreateDto {
     private Long billId;
 
     private List<Integer> percentages;
+
+    private List<Integer> shares;
 }

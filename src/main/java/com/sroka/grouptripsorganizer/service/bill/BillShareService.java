@@ -10,6 +10,7 @@ import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.BillShareForThisUserAlreadyExistsException;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.InvalidPercentageBillShareException;
+import com.sroka.grouptripsorganizer.exception.InvalidShareBillShareException;
 import com.sroka.grouptripsorganizer.mapper.BillShareMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
 import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
@@ -41,6 +42,7 @@ public class BillShareService {
         User executor = userRepository.getById(executorId);
         List<Long> debtorsIds = billShareCreateDto.getDebtorsIds();
         List<Integer> percentages = billShareCreateDto.getPercentages();
+        List<Integer> shares = billShareCreateDto.getShares();
         Long billId = billShareCreateDto.getBillId();
 
         Bill bill = billRepository.getById(billId);
@@ -53,6 +55,10 @@ public class BillShareService {
             case BY_PERCENTAGES -> {
                 validateBillShareByPercentages(billShareCreateDto);
                 billShareDtoList = splitBillByPercentages(bill, debtorsIds, percentages);
+            }
+            case BY_SHARES -> {
+                validateBillShareByShares(billShareCreateDto);
+                billShareDtoList = splitBillByShares(bill, debtorsIds, shares);
             }
         }
 
@@ -122,9 +128,10 @@ public class BillShareService {
                 throw new InvalidPercentageBillShareException();
             }
 
-            BigDecimal multiplier = new BigDecimal(percentage).divide(new BigDecimal(100));
+            BigDecimal multiplier = new BigDecimal(percentage).divide(new BigDecimal(100), 2, UP);
             BigDecimal amountToSplit = bill.getTotalAmount().multiply(multiplier);
             amountToSplit = amountToSplit.setScale(2, UP);
+
             BillShare billShare = new BillShare(bill.getPayer(), debtor, amountToSplit, bill);
             if (debtor.equals(bill.getPayer())) {
                 billShare.setPaid(true);
@@ -136,6 +143,41 @@ public class BillShareService {
         if(percentagesSum.get() != 100) {
             throw new InvalidPercentageBillShareException();
         }
+
+        billShares.forEach(billShareRepository::save);
+        return billShares.stream().map(billShareMapper::convertToDto).collect(toList());
+    }
+
+    private List<BillShareDto> splitBillByShares(Bill bill, List<Long> debtorsIds, List<Integer> shares) {
+        List<BillShare> billShares = new ArrayList<>();
+
+        int sharesSum = shares.stream().mapToInt(Integer::intValue).sum();
+
+        List<Pair<Long, Integer>> debtorsShares = Streams.zip(debtorsIds.stream(), shares.stream(),
+                Pair::of).toList();
+
+        debtorsShares.forEach(debtorShare -> {
+            User debtor = userRepository.getById(debtorShare.getFirst());
+
+            validateBillShareUser(debtor, bill.getTrip());
+            validateBillShareDebtor(debtor, bill);
+
+            int share = debtorShare.getSecond();
+            if (share <= 0) {
+                throw new InvalidShareBillShareException();
+            }
+
+            BigDecimal amountToSplit = bill.getTotalAmount().divide(new BigDecimal(sharesSum), 2, UP);
+            amountToSplit = amountToSplit.multiply(new BigDecimal(share));
+            amountToSplit = amountToSplit.setScale(2, UP);
+
+            BillShare billShare = new BillShare(bill.getPayer(), debtor, amountToSplit, bill);
+            if (debtor.equals(bill.getPayer())) {
+                billShare.setPaid(true);
+            }
+
+            billShares.add(billShare);
+        });
 
         billShares.forEach(billShareRepository::save);
         return billShares.stream().map(billShareMapper::convertToDto).collect(toList());
@@ -157,6 +199,13 @@ public class BillShareService {
         if (billShareCreateDto.getPercentages() == null
                 || (billShareCreateDto.getPercentages().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidPercentageBillShareException();
+        }
+    }
+
+    private void validateBillShareByShares(BillShareCreateDto billShareCreateDto) {
+        if (billShareCreateDto.getShares() == null
+                || (billShareCreateDto.getShares().size() != billShareCreateDto.getDebtorsIds().size())) {
+            throw new InvalidShareBillShareException();
         }
     }
 }
