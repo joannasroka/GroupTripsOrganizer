@@ -19,5 +19,8 @@ public class TripDto {
     private String name;
 
     @Schema(required = true)
-    Set<UserDto> participants;
+    private UserDto owner;
+
+    @Schema(required = true)
+    private Set<UserDto> participants;
 }
