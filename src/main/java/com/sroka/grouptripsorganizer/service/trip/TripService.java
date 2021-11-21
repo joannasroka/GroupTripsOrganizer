@@ -4,6 +4,7 @@ import com.sroka.grouptripsorganizer.dto.trip.TripCreateDto;
 import com.sroka.grouptripsorganizer.dto.trip.TripDto;
 import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
+import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.TripMapper;
 import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
@@ -40,6 +41,15 @@ public class TripService {
         return tripMapper.convertToDto(savedTrip);
     }
 
+    public TripDto getTripById(Long tripId, Long executorId) {
+        User user = userRepository.getById(executorId);
+        Trip trip = tripRepository.getById(tripId);
+
+        validate(user, trip);
+
+        return tripMapper.convertToDto(trip);
+    }
+
     public void addParticipant(Long tripId, Long userId) {
         Trip trip = tripRepository.getById(tripId);
         User user = userRepository.getById(userId);
@@ -72,6 +82,12 @@ public class TripService {
 
     private boolean isNameUnique(String tripName, User owner) {
         return !tripRepository.existsByOwnerAndNameIgnoreCase(owner, tripName);
+    }
+
+    private void validate(User user, Trip trip) {
+        if (!trip.getParticipants().contains(user)) {
+            throw new DatabaseEntityNotFoundException();
+        }
     }
 
 }
