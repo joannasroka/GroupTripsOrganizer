@@ -28,16 +28,16 @@ public class User extends BaseEntity {
     public static final String EMAIL_FIELD_NAME = "email";
 
     @Column(name = "email", length = 250, nullable = false, unique = true)
-    public String email;
+    private String email;
 
     @Column(name = "password", length = 60)
-    public String password;
+    private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
-    public String firstName;
+    private String firstName;
 
     @Column(name = "last_name", nullable = false, length = 100)
-    public String lastName;
+    private String lastName;
 
     @Column(name = "phone_number", nullable = false, length = 16)
     private String phoneNumber;
