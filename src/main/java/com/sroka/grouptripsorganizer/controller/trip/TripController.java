@@ -64,4 +64,12 @@ public class TripController extends BaseController {
 
         return tripService.getAllByUser(userId, pageable);
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{tripId}")
+    public TripDto getTripById(@PathVariable Long tripId) {
+        Long userId = authenticationContextService.getCurrentUserId();
+
+        return tripService.getTripById(tripId, userId);
+    }
 }
