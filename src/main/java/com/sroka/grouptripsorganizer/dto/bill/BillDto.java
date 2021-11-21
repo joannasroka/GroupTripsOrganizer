@@ -43,4 +43,7 @@ public class BillDto {
 
     @Schema(required = true)
     private SplitCategory splitCategory;
+
+    @Schema(required = true)
+    private boolean paid;
 }
