@@ -15,8 +15,8 @@ import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +83,19 @@ public class BillShareService {
         if (billShares.stream().allMatch(BillShare::isPaid)) {
             bill.setPaid(true);
         }
+        return billShareMapper.convertToDtos(billShares);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BillShareDto> getByBillId(Long billId, Long executorId) {
+        User executor = userRepository.getById(executorId);
+        Bill bill = billRepository.getById(billId);
+        Trip trip = bill.getTrip();
+
+        validate(executor, trip);
+
+        List<BillShare> billShares = bill.getBillShares();
+
         return billShareMapper.convertToDtos(billShares);
     }
 
@@ -254,6 +267,12 @@ public class BillShareService {
         if (billShareCreateDto.getExactAmounts() == null
                 || (billShareCreateDto.getExactAmounts().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidExactAmountBillShareException();
+        }
+    }
+
+    private void validate(User user, Trip trip) {
+        if (!trip.getParticipants().contains(user)) {
+            throw new DatabaseEntityNotFoundException();
         }
     }
 }

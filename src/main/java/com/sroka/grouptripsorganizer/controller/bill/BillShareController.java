@@ -37,4 +37,12 @@ public class BillShareController extends BaseController {
 
         return billShareService.markBillShareAsPaid(billShareId, currentUserId);
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/bills/{billId}")
+    public List<BillShareDto> getBillSharesByBillId(@PathVariable Long billId) {
+        Long currentUserId = authenticationContextService.getCurrentUserId();
+
+        return billShareService.getByBillId(billId, currentUserId);
+    }
 }
