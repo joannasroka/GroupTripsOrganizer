@@ -27,11 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 
 import static com.sroka.grouptripsorganizer.entity.bill.Currency.*;
+import static java.math.RoundingMode.*;
 import static java.math.RoundingMode.UP;
 
 @Slf4j
@@ -125,13 +127,13 @@ public class BillService {
         if (originalCurrency != PLN) {
             String pathToPln = formatToCorrectExchangeRatesPath(bill.getDate(), originalCurrency);
             BigDecimal multiplierToPln = getExchangeRate(pathToPln);
-            totalAmount = totalAmount.multiply(multiplierToPln);
+            totalAmount = totalAmount.multiply(multiplierToPln).setScale(2, HALF_UP);
         }
 
         if (selectedCurrency != PLN) {
             String pathToSelected = formatToCorrectExchangeRatesPath(bill.getDate(), selectedCurrency);
             BigDecimal multiplierToSelected = getExchangeRate(pathToSelected);
-            totalAmount = totalAmount.divide(multiplierToSelected);
+            totalAmount = totalAmount.divide(multiplierToSelected, 2, HALF_UP);
         }
 
         bill.setCurrency(selectedCurrency);
