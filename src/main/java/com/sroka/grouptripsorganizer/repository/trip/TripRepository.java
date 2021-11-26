@@ -15,8 +15,8 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
     boolean existsByOwnerAndNameIgnoreCase(User owner, String name);
 
-    @Query(value = "SELECT G.ID, G.VERSION, NAME, OWNER_ID " +
-            "FROM TRIPS G JOIN USER_TRIP UG ON G.ID = UG.TRIP_ID " +
-            "WHERE USER_ID = :userId", nativeQuery = true)
+    @Query(value = "SELECT G.id, G.version, name, owner_id " +
+            "FROM trips G JOIN user_trip UG ON G.id = UG.trip_id " +
+            "WHERE user_id = :userId", nativeQuery = true)
     Page<Trip> findAllByUserId(Long userId, Pageable pageable);
 }
