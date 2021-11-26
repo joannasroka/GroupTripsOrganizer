@@ -47,7 +47,9 @@ public class BillCreateDto {
 
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
-    private Currency currency;
+    private Currency originalCurrency;
+
+    private Currency selectedCurrency;
 
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
