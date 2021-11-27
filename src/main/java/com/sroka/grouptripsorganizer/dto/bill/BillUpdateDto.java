@@ -31,4 +31,6 @@ public class BillUpdateDto {
     @NotNull(message = "error.cannotBeBlank")
     @Schema(required = true)
     private LocalDate date;
+
+    private Currency selectedCurrency;
 }

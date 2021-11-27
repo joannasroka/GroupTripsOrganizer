@@ -6,6 +6,7 @@ import com.sroka.grouptripsorganizer.dto.bill.BillCreateDto;
 import com.sroka.grouptripsorganizer.dto.bill.BillDto;
 import com.sroka.grouptripsorganizer.dto.bill.BillUpdateDto;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
+import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import com.sroka.grouptripsorganizer.entity.bill.Currency;
 import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
@@ -14,6 +15,7 @@ import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
 import com.sroka.grouptripsorganizer.exception.InvalidExchangeRateException;
 import com.sroka.grouptripsorganizer.mapper.BillMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
+import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
 import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
 import com.sroka.grouptripsorganizer.utils.LocalDateTimeFormatter;
@@ -27,14 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 
-import static com.sroka.grouptripsorganizer.entity.bill.Currency.*;
-import static java.math.RoundingMode.*;
+import static com.sroka.grouptripsorganizer.entity.bill.Currency.PLN;
+import static java.math.RoundingMode.HALF_UP;
 import static java.math.RoundingMode.UP;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @Slf4j
 @Service
@@ -48,6 +52,7 @@ public class BillService {
     private final BillRepository billRepository;
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
+    private final BillShareRepository billShareRepository;
     private final ObjectMapper objectMapper;
 
     public BillDto create(BillCreateDto billCreateDto, Long executorId) {
@@ -80,6 +85,14 @@ public class BillService {
         bill.setCategory(billUpdateDto.getCategory());
         bill.setDate(billUpdateDto.getDate());
         bill.setTitle(billUpdateDto.getTitle());
+
+        Currency originalCurrency = bill.getCurrency();
+        Currency selectedCurrency = billUpdateDto.getSelectedCurrency();
+
+        if (selectedCurrency != null && !originalCurrency.equals(selectedCurrency)) {
+            convertAmount(bill, bill.getCurrency(), billUpdateDto.getSelectedCurrency());
+            updateAllBillShares(bill, originalCurrency, selectedCurrency);
+        }
 
         return billMapper.convertToDto(bill);
     }
@@ -118,7 +131,7 @@ public class BillService {
     }
 
     private void convertAmount(Bill bill, Currency originalCurrency, Currency selectedCurrency) {
-        if(selectedCurrency == null || originalCurrency.equals(selectedCurrency)) {
+        if (selectedCurrency == null || originalCurrency.equals(selectedCurrency)) {
             bill.setCurrency(originalCurrency);
             return;
         }
@@ -126,13 +139,13 @@ public class BillService {
         BigDecimal totalAmount = bill.getTotalAmount();
         if (originalCurrency != PLN) {
             String pathToPln = formatToCorrectExchangeRatesPath(bill.getDate(), originalCurrency);
-            BigDecimal multiplierToPln = getExchangeRate(pathToPln);
+            BigDecimal multiplierToPln = getExchangeRate(pathToPln, originalCurrency);
             totalAmount = totalAmount.multiply(multiplierToPln).setScale(2, HALF_UP);
         }
 
         if (selectedCurrency != PLN) {
             String pathToSelected = formatToCorrectExchangeRatesPath(bill.getDate(), selectedCurrency);
-            BigDecimal multiplierToSelected = getExchangeRate(pathToSelected);
+            BigDecimal multiplierToSelected = getExchangeRate(pathToSelected, selectedCurrency);
             totalAmount = totalAmount.divide(multiplierToSelected, 2, HALF_UP);
         }
 
@@ -140,22 +153,67 @@ public class BillService {
         bill.setTotalAmount(totalAmount.setScale(2));
     }
 
-    private BigDecimal getExchangeRate(String path) {
+    private void convertAmount(Bill bill, BillShare billShare, Currency originalCurrency, Currency selectedCurrency) {
+        if (selectedCurrency == null || originalCurrency.equals(selectedCurrency)) {
+            return;
+        }
+        LocalDate exchangeRateDate = bill.getDate();
+
+        BigDecimal totalAmount = billShare.getAmount();
+        if (originalCurrency != PLN) {
+            String pathToPln = formatToCorrectExchangeRatesPath(exchangeRateDate, originalCurrency);
+            BigDecimal multiplierToPln = getExchangeRate(pathToPln, originalCurrency);
+            totalAmount = totalAmount.multiply(multiplierToPln).setScale(2, HALF_UP);
+        }
+
+        if (selectedCurrency != PLN) {
+            String pathToSelected = formatToCorrectExchangeRatesPath(exchangeRateDate, selectedCurrency);
+            BigDecimal multiplierToSelected = getExchangeRate(pathToSelected, selectedCurrency);
+            totalAmount = totalAmount.divide(multiplierToSelected, 2, HALF_UP);
+        }
+
+        billShare.setAmount(totalAmount.setScale(2));
+    }
+
+
+    private BigDecimal getExchangeRate(String path, Currency currency) {
         try {
             StringBuilder result = new StringBuilder();
             URL url = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null; ) {
-                    result.append(line);
+
+            int code = conn.getResponseCode();
+
+            if (code == HTTP_OK) {
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream()))) {
+                    for (String line; (line = reader.readLine()) != null; ) {
+                        result.append(line);
+                    }
                 }
+                JsonNode foo = objectMapper.readTree(result.toString());
+                String rateToString = foo.findValue("mid").asText();
+                BigDecimal rate = new BigDecimal(rateToString).setScale(2, UP);
+                return rate;
+            } else if (code == HTTP_NOT_FOUND) {
+                result = new StringBuilder();
+                path = formatToCorrectExchangeRatesPath(currency);
+                url = new URL(path);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream()))) {
+                    for (String line; (line = reader.readLine()) != null; ) {
+                        result.append(line);
+                    }
+                }
+                JsonNode foo = objectMapper.readTree(result.toString());
+                String rateToString = foo.findValue("mid").asText();
+                BigDecimal rate = new BigDecimal(rateToString).setScale(2, UP);
+                return rate;
             }
-            JsonNode foo = objectMapper.readTree(result.toString());
-            String rateToString = foo.findValue("mid").asText();
-            BigDecimal rate = new BigDecimal(rateToString).setScale(2, UP);
-            return rate;
+            throw new InvalidExchangeRateException();
         } catch (Exception e) {
             throw new InvalidExchangeRateException();
         }
@@ -164,6 +222,15 @@ public class BillService {
     private String formatToCorrectExchangeRatesPath(LocalDate date, Currency currency) {
         String billDate = LocalDateTimeFormatter.format(date);
         return EXCHANGE_RATES_PATH.formatted(currency.toString(), billDate);
+    }
+
+    private String formatToCorrectExchangeRatesPath(Currency currency) {
+        return EXCHANGE_RATES_PATH.formatted(currency.toString(), "last");
+    }
+
+    private void updateAllBillShares(Bill bill, Currency originalCurrency, Currency selectedCurrency) {
+        List<BillShare> billShareList = billShareRepository.getByBillId(bill.getId());
+        billShareList.forEach(billShare -> convertAmount(bill, billShare, originalCurrency, selectedCurrency));
     }
 
     private void validate(User user, Trip trip) {
