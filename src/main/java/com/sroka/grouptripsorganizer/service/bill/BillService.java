@@ -97,7 +97,6 @@ public class BillService {
         return billMapper.convertToDto(bill);
     }
 
-
     public void delete(Long billId, Long executorId) {
         User executor = userRepository.getById(executorId);
         Bill billToDelete = billRepository.getById(billId);
@@ -106,8 +105,42 @@ public class BillService {
         validate(executor, trip);
         validateBillToDelete(billToDelete);
 
+        List<BillShare> billShareList = billToDelete.getBillShares();
+        if (!billShareList.isEmpty()) {
+            billShareRepository.deleteAll(billShareList);
+        }
+
         billRepository.delete(billToDelete);
     }
+
+    public void markBillAsPaid(Long billId, Long executorId) {
+        User executor = userRepository.getById(executorId);
+        Bill bill = billRepository.getById(billId);
+        Trip trip = bill.getTrip();
+
+        validate(executor, trip);
+        List<BillShare> billShareList = bill.getBillShares();
+
+        if (!billShareList.isEmpty()) {
+            billShareList.forEach(billShare -> billShare.setPaid(true));
+        }
+        bill.setPaid(true);
+    }
+
+    public void markBillAsUnpaid(Long billId, Long executorId) {
+        User executor = userRepository.getById(executorId);
+        Bill bill = billRepository.getById(billId);
+        Trip trip = bill.getTrip();
+
+        validate(executor, trip);
+        List<BillShare> billShareList = bill.getBillShares();
+
+        if (!billShareList.isEmpty()) {
+            billShareList.forEach(billShare -> billShare.setPaid(false));
+        }
+        bill.setPaid(false);
+    }
+
 
     @Transactional(readOnly = true)
     public Page<BillDto> getByTrip(Long tripId, Long executorId, Pageable pageable) {
@@ -240,6 +273,10 @@ public class BillService {
     }
 
     private void validateBillToDelete(Bill bill) {
+        if (bill.getBillShares().isEmpty()) {
+            return;
+        }
+
         if (!bill.isPaid()) {
             throw new BillIsNotSettledException();
         }

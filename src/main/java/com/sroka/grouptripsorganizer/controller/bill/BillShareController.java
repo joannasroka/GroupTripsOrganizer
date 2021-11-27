@@ -31,11 +31,19 @@ public class BillShareController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @PutMapping("/{billShareId}")
+    @PutMapping("/{billShareId}/paid")
     public List<BillShareDto> markBillShareAsPaid(@PathVariable("billShareId") Long billShareId) {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
         return billShareService.markBillShareAsPaid(billShareId, currentUserId);
+    }
+
+    @PreAuthorize("permitAll()")
+    @PutMapping("/{billShareId}/unpaid")
+    public List<BillShareDto> markBillShareAsUnpaid(@PathVariable("billShareId") Long billShareId) {
+        Long currentUserId = authenticationContextService.getCurrentUserId();
+
+        return billShareService.markBillShareAsUnpaid(billShareId, currentUserId);
     }
 
     @PreAuthorize("permitAll()")
@@ -45,4 +53,12 @@ public class BillShareController extends BaseController {
 
         return billShareService.getByBillId(billId, currentUserId);
     }
+
+    @PreAuthorize("permitAll()")
+    @DeleteMapping("/{billShareId}")
+    public void deleteBillShare(@PathVariable Long billShareId) {
+        Long currentUserId = authenticationContextService.getCurrentUserId();
+        billShareService.delete(billShareId, currentUserId);
+    }
+
 }

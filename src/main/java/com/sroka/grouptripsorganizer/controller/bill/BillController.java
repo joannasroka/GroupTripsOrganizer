@@ -50,6 +50,19 @@ public class BillController extends BaseController {
         return billService.update(billUpdateDto, billId, currentUserId);
     }
 
+    @PreAuthorize("permitAll()")
+    @PutMapping("/{billId}/paid")
+    public void markBillAsPaid(@PathVariable("billId") Long billId) {
+        Long currentUserId = authenticationContextService.getCurrentUserId();
+        billService.markBillAsPaid(billId, currentUserId);
+    }
+
+    @PreAuthorize("permitAll()")
+    @PutMapping("/{billId}/unpaid")
+    public void markBillAsUnpaid(@PathVariable("billId") Long billId) {
+        Long currentUserId = authenticationContextService.getCurrentUserId();
+        billService.markBillAsUnpaid(billId, currentUserId);
+    }
 
     @PreAuthorize("permitAll()")
     @DeleteMapping("/{billId}")

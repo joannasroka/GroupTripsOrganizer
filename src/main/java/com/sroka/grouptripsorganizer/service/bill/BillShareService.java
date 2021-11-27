@@ -86,6 +86,21 @@ public class BillShareService {
         return billShareMapper.convertToDtos(billShares);
     }
 
+    public List<BillShareDto> markBillShareAsUnpaid(Long billShareId, Long executorId) {
+        BillShare billShare = billShareRepository.getById(billShareId);
+        Bill bill = billShare.getBill();
+        User executor = userRepository.getById(executorId);
+
+        validateBillShareUser(executor, bill.getTrip());
+
+        billShare.setPaid(false);
+        bill.setPaid(false);
+
+        List<BillShare> billShares = bill.getBillShares();
+
+        return billShareMapper.convertToDtos(billShares);
+    }
+
     @Transactional(readOnly = true)
     public List<BillShareDto> getByBillId(Long billId, Long executorId) {
         User executor = userRepository.getById(executorId);
@@ -97,6 +112,23 @@ public class BillShareService {
         List<BillShare> billShares = bill.getBillShares();
 
         return billShareMapper.convertToDtos(billShares);
+    }
+
+    public void delete(Long billShareId, Long executorId) {
+        User executor = userRepository.getById(executorId);
+        BillShare billShareToDelete = billShareRepository.getById(billShareId);
+        Bill bill = billShareToDelete.getBill();
+        Trip trip = bill.getTrip();
+
+        validate(executor, trip);
+
+        bill.getBillShares().remove(billShareToDelete);
+        billShareRepository.delete(billShareToDelete);
+
+        List<BillShare> billShares = bill.getBillShares();
+        if (!billShares.isEmpty() && billShares.stream().allMatch(BillShare::isPaid)) {
+            bill.setPaid(true);
+        }
     }
 
     private List<BillShareDto> splitBillEqually(Bill bill, List<Long> debtorsIds) {
