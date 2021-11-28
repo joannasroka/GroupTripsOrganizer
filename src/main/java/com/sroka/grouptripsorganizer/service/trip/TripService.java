@@ -50,10 +50,9 @@ public class TripService {
         return tripMapper.convertToDto(trip);
     }
 
-    public void addParticipant(Long tripId, Long userId) {
+    public void addParticipant(Long tripId, String userEmail) {
         Trip trip = tripRepository.getById(tripId);
-        User user = userRepository.getById(userId);
-
+        User user = userRepository.getByEmailIgnoreCase(userEmail);
         trip.addParticipant(user);
     }
 

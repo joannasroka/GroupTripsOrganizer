@@ -19,5 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailIgnoreCase(String email);
 
+    default User getByEmailIgnoreCase(String email) {
+        return findByEmailIgnoreCase(email).orElseThrow(DatabaseEntityNotFoundException::new);
+    }
+
     List<User> findAllByAccountStatus(AccountStatus accountStatus);
 }

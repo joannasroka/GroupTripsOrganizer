@@ -41,10 +41,10 @@ public class TripController extends BaseController {
     }
 
     @PreAuthorize("permitAll()")
-    @PostMapping("/{tripId}/users/{userId}")
+    @PostMapping("/{tripId}/users/{userEmail}")
     public void addParticipant(@PathVariable Long tripId,
-                               @PathVariable Long userId) {
-        tripService.addParticipant(tripId, userId);
+                               @PathVariable String userEmail) {
+        tripService.addParticipant(tripId, userEmail);
     }
 
     @PreAuthorize("permitAll()")
