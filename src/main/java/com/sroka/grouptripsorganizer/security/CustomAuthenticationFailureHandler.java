@@ -1,9 +1,11 @@
 package com.sroka.grouptripsorganizer.security;
 
+import com.google.common.net.HttpHeaders;
 import com.sroka.grouptripsorganizer.security.exception.WithMessageAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -21,6 +23,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+        response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         if (exception instanceof BadCredentialsException) {
             responseWriter.writeResponse(response, "error.badCredentials", HttpStatus.UNAUTHORIZED);
         } else if (exception instanceof WithMessageAuthenticationException) {
