@@ -13,8 +13,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Set;
 
 import static com.sroka.grouptripsorganizer.entity.trip.Trip.NAME_FIELD_NAME;
@@ -34,10 +36,12 @@ public class TripController extends BaseController {
     @PreAuthorize("permitAll()")
     @PostMapping
     @ResponseStatus(CREATED)
-    public TripDto createTrip(@Valid @RequestBody TripCreateDto tripCreateDto, Errors errors) {
+    public TripDto createTrip(@Valid @RequestBody TripCreateDto tripCreateDto,
+                              @RequestPart("picture") MultipartFile picture,
+                              Errors errors) throws IOException {
         Long currentUserId = authenticationContextService.getCurrentUserId();
 
-        return tripService.create(tripCreateDto, currentUserId, errors);
+        return tripService.create(tripCreateDto, currentUserId, picture, errors);
     }
 
     @PreAuthorize("permitAll()")

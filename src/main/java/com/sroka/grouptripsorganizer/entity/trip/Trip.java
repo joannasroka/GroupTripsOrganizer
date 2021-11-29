@@ -27,6 +27,10 @@ public class Trip extends BaseEntity {
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
+    @Lob
+    @Column(name = "picture", columnDefinition = "BLOB")
+    private byte[] picture;
+
     @ManyToMany
     @JoinTable(name = "user_trip", joinColumns = @JoinColumn(name = "trip_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))

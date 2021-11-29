@@ -5,6 +5,7 @@ import com.sroka.grouptripsorganizer.dto.trip.TripDto;
 import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
+import com.sroka.grouptripsorganizer.exception.NotAllowedFileTypeException;
 import com.sroka.grouptripsorganizer.exception.ValidationException;
 import com.sroka.grouptripsorganizer.mapper.TripMapper;
 import com.sroka.grouptripsorganizer.repository.trip.TripRepository;
@@ -14,28 +15,37 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class TripService {
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of("image/jpeg", "image/png");
+
     private final TripMapper tripMapper;
 
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
 
-    public TripDto create(TripCreateDto tripCreateDto, Long ownerId, Errors errors) {
+    public TripDto create(TripCreateDto tripCreateDto, Long ownerId, MultipartFile file, Errors errors) throws IOException {
         User owner = userRepository.getById(ownerId);
 
         validateFields(tripCreateDto.getName(), owner, errors);
+
+        String fileType = file.getContentType();
+        validateFileType(fileType);
 
         Trip newTrip = tripMapper.convertToEntity(tripCreateDto);
         newTrip.setOwner(owner);
         newTrip.setParticipants(new HashSet<>());
         newTrip.addParticipant(owner);
+        newTrip.setPicture(file.getBytes());
 
         Trip savedTrip = tripRepository.save(newTrip);
         return tripMapper.convertToDto(savedTrip);
@@ -89,4 +99,9 @@ public class TripService {
         }
     }
 
+    private void validateFileType(String type) {
+        if (!ALLOWED_MIME_TYPES.contains(type)) {
+            throw new NotAllowedFileTypeException();
+        }
+    }
 }

@@ -23,4 +23,7 @@ public class TripDto {
 
     @Schema(required = true)
     private Set<UserDto> participants;
+
+    @Schema(required = true)
+    private byte[] picture;
 }
