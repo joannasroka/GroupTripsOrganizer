@@ -3,9 +3,10 @@ package com.sroka.grouptripsorganizer.service.user;
 import com.sroka.grouptripsorganizer.builder.user.UserBuilder;
 import com.sroka.grouptripsorganizer.builder.user.UserCreateDtoBuilder;
 import com.sroka.grouptripsorganizer.builder.user.UserDtoBuilder;
+import com.sroka.grouptripsorganizer.builder.user.UserUpdateDtoBuilder;
 import com.sroka.grouptripsorganizer.dto.user.UserCreateDto;
 import com.sroka.grouptripsorganizer.dto.user.UserDto;
-import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
+import com.sroka.grouptripsorganizer.dto.user.UserUpdateDto;
 import com.sroka.grouptripsorganizer.entity.user.User;
 import com.sroka.grouptripsorganizer.mapper.UserMapper;
 import com.sroka.grouptripsorganizer.repository.user.UserRepository;
@@ -21,8 +22,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
-import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.*;
+import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,7 +54,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("Should create User")
     void shouldCreateUser() {
-        //given
+        // given
         UserCreateDto userCreateDto = UserCreateDtoBuilder
                 .get()
                 .build();
@@ -80,12 +82,54 @@ public class UserServiceTest {
         doNothing().when(accountActivationService).sendActivationMail(any(User.class));
         when(userMapper.convertToDto(user)).thenReturn(expectedUserDto);
 
-        //when
+        // when
         UserDto actualUserDto = userService.create(userCreateDto, bindingResult);
 
-        //then
+        // then
         assertNotNull(actualUserDto);
         assertEquals(expectedUserDto, actualUserDto);
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should update User")
+    void shouldUpdateUser() {
+        //given
+        UserUpdateDto userUpdateDto = UserUpdateDtoBuilder.get().build();
+        Long userId = 1L;
+        User user = UserBuilder.get().build();
+
+        User updatedUser = UserBuilder.get().build();
+        updateUserFields(userUpdateDto, updatedUser);
+        UserDto expectedUserDto = mapUserToUserDto(updatedUser);
+
+        when(userRepository.getById(anyLong())).thenReturn(user);
+        when(userMapper.convertToDto(user)).thenReturn(expectedUserDto);
+
+        //when
+        UserDto actualUserDto = userService.update(userUpdateDto, userId);
+
+        //then
+        assertNotNull(actualUserDto);
+        assertEquals(expectedUserDto.getFirstName(), actualUserDto.getFirstName());
+        assertEquals(expectedUserDto.getLastName(), actualUserDto.getLastName());
+        assertEquals(expectedUserDto.getPhoneNumber(), actualUserDto.getPhoneNumber());
+    }
+
+    private void updateUserFields(UserUpdateDto userUpdateDto, User user) {
+        user.setFirstName(userUpdateDto.getFirstName());
+        user.setLastName(userUpdateDto.getLastName());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
+    }
+
+    private UserDto mapUserToUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setEmail(user.getEmail());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+
+        return userDto;
     }
 }
