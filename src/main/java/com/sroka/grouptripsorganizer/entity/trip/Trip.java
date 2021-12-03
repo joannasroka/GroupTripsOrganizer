@@ -46,9 +46,11 @@ public class Trip extends BaseEntity {
     @OneToMany(mappedBy = "trip", cascade = ALL)
     private Set<Note> notes;
 
-    public Trip(String name, User owner) {
+    public Trip(String name, User owner, byte[] picture) {
         this.name = name;
         this.owner = owner;
+        this.picture = picture;
+
         participants = new HashSet<>();
         bills = new HashSet<>();
         addParticipant(owner);

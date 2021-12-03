@@ -105,11 +105,12 @@ public class DataInitializer implements CommandLineRunner {
 
 
     private Trip createGroup(int number) {
-        String name = "Group" + number;
+        String name = "Trip " + number;
+        byte[] picture = new byte[]{};
 
         List<User> users = userRepository.findAllByAccountStatus(ACTIVE);
 
-        return new Trip(name, users.get(number % users.size()));
+        return new Trip(name, users.get(number % users.size()), picture);
     }
 
     private void initializeParticipants() {
