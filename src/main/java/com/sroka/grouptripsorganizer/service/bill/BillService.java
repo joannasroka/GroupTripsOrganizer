@@ -136,7 +136,12 @@ public class BillService {
         List<BillShare> billShareList = bill.getBillShares();
 
         if (!billShareList.isEmpty()) {
-            billShareList.forEach(billShare -> billShare.setPaid(false));
+            billShareList.forEach(billShare ->  {
+                billShare.setPaid(false);
+                if (billShare.getDebtor().equals(billShare.getBill().getPayer())) {
+                    billShare.setPaid(true);
+                }
+            });
         }
         bill.setPaid(false);
     }

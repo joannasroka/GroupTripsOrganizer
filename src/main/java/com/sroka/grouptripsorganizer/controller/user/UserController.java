@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Locale;
+
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -25,8 +27,8 @@ public class UserController extends BaseController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto, Errors errors) {
-        return userService.create(userCreateDto, errors);
+    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto, @RequestParam String language, Errors errors) {
+        return userService.create(userCreateDto, language, errors);
     }
 
     @PreAuthorize("permitAll()")

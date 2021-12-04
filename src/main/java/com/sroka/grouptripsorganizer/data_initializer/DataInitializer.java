@@ -81,7 +81,6 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private User createUser(int number, AccountStatus accountStatus) {
-        String mail = faker.bothify("????##@mail.com");
         String password = null;
 
         if (ACTIVE.equals(accountStatus)) {
@@ -90,6 +89,13 @@ public class DataInitializer implements CommandLineRunner {
 
         String firstName = faker.name().firstName();
         String lastName = faker.name().lastName();
+
+        if (number == 0 && accountStatus == ACTIVE) {
+            firstName = "John";
+            lastName = "Smith";
+        }
+
+        String mail = firstName.toLowerCase(Locale.ROOT) + "." + lastName.toLowerCase(Locale.ROOT) + "@mail.com";
         String phoneNumber = faker.numerify("#########");
         LocalDate dateOfBirth = generateRandomDateInPeriodOfTime(LocalDate.of(1960, 1, 1), LocalDate.of(2010, 1, 1));
 

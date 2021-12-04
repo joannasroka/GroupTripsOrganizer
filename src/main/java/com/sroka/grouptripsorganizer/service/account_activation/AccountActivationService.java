@@ -15,10 +15,9 @@ public class AccountActivationService {
     private final ActivationEmailService activationEmailService;
     private final VerificationTokenService verificationTokenService;
 
-    public void sendActivationMail(User user) {
+    public void sendActivationMail(User user, Locale language) {
         VerificationToken verificationToken = verificationTokenService.create(user);
-        Locale language;
 
-        activationEmailService.sendActivationMail(verificationToken);
+        activationEmailService.sendActivationMail(verificationToken, language);
     }
 }

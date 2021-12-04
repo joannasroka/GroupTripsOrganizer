@@ -22,6 +22,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.REGISTERED;
@@ -55,6 +56,7 @@ public class UserServiceTest {
     @DisplayName("Should create User")
     void shouldCreateUser() {
         // given
+        String language = "EN";
         UserCreateDto userCreateDto = UserCreateDtoBuilder
                 .get()
                 .build();
@@ -79,11 +81,11 @@ public class UserServiceTest {
         doNothing().when(userEmailValidator).validateEmail(userCreateDto.getEmail(), bindingResult);
         when(userMapper.convertToEntity(userCreateDto)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
-        doNothing().when(accountActivationService).sendActivationMail(any(User.class));
+        doNothing().when(accountActivationService).sendActivationMail(any(User.class), any(Locale.class));
         when(userMapper.convertToDto(user)).thenReturn(expectedUserDto);
 
         // when
-        UserDto actualUserDto = userService.create(userCreateDto, bindingResult);
+        UserDto actualUserDto = userService.create(userCreateDto, language, bindingResult);
 
         // then
         assertNotNull(actualUserDto);

@@ -34,17 +34,17 @@ public class ActivationEmailService {
     @Value("${configuration.security.accountActivationUrl}")
     private String accountActivationUrl;
 
-    public void sendActivationMail(VerificationToken verificationToken) {
+    public void sendActivationMail(VerificationToken verificationToken, Locale language) {
         User user = verificationToken.getUser();
-        String body = generateMailBody(user, verificationToken.getExpiryDate(), accountActivationUrl + verificationToken.getToken());
-        String topic = messageSource.getMessage("mail.activation.title", null, POLISH_LOCALE_LANGUAGE);
+        String body = generateMailBody(user, verificationToken.getExpiryDate(), accountActivationUrl + verificationToken.getToken(), language);
+        String topic = messageSource.getMessage("mail.activation.title", null, language);
 
         emailSender.send(user.getEmail(), from, topic, body, true);
     }
 
-    private String generateMailBody(User user, LocalDateTime linkExpirationTime, String activationLink) {
+    private String generateMailBody(User user, LocalDateTime linkExpirationTime, String activationLink, Locale language) {
         String openingName = user.getFirstName() + " " + user.getLastName();
 
-        return activationMailGenerator.generate(openingName, activationLink, linkExpirationTime, POLISH_LOCALE_LANGUAGE);
+        return activationMailGenerator.generate(openingName, activationLink, linkExpirationTime, language);
     }
 }

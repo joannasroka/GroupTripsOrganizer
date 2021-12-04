@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 import static com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus.ACTIVE;
@@ -64,7 +65,7 @@ public class VerificationTokenService {
         tokenRepository.delete(verificationToken);
     }
 
-    public void resend(String userEmail) {
+    public void resend(String userEmail, String language) {
         User userToResendToken = userRepository.findByEmailIgnoreCase(userEmail)
                 .orElseThrow(DatabaseEntityNotFoundException::new);
 
@@ -73,8 +74,9 @@ public class VerificationTokenService {
         }
 
         VerificationToken verificationToken = create(userToResendToken);
+        Locale locale = Locale.forLanguageTag(language);
 
-        activationEmailService.sendActivationMail(verificationToken);
+        activationEmailService.sendActivationMail(verificationToken, locale);
     }
 
     private String generateToken() {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import javax.transaction.Transactional;
+import java.util.Locale;
 
 @Service
 @Transactional
@@ -28,13 +29,14 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
-    public UserDto create(UserCreateDto userCreateDto, Errors errors) {
+    public UserDto create(UserCreateDto userCreateDto, String language, Errors errors) {
         emailValidator.validateEmail(userCreateDto.getEmail(), errors);
 
         User user = userMapper.convertToEntity(userCreateDto);
         user = userRepository.save(user);
 
-        accountActivationService.sendActivationMail(user);
+        Locale locale = Locale.forLanguageTag(language);
+        accountActivationService.sendActivationMail(user, locale);
 
         return userMapper.convertToDto(user);
     }
