@@ -16,10 +16,10 @@ import javax.persistence.*;
 public class Note extends BaseEntity {
     public static final String TITLE_FIELD_NAME = "title";
 
-    @Column(name = "title", nullable = false, length = 30)
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
 
-    @Column(name = "content", nullable = false, length = 500)
+    @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
     @ManyToOne
