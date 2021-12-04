@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 public class BillShareCreateDto {
     @NotNull(message = "error.cannotBeBlank")
+    @NotEmpty
     @Schema(required = true)
     private List<Long> debtorsIds;
 

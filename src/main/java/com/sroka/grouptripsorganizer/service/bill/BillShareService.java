@@ -6,10 +6,7 @@ import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillShare;
 import com.sroka.grouptripsorganizer.entity.trip.Trip;
 import com.sroka.grouptripsorganizer.entity.user.User;
-import com.sroka.grouptripsorganizer.exception.DatabaseEntityNotFoundException;
-import com.sroka.grouptripsorganizer.exception.InvalidExactAmountBillShareException;
-import com.sroka.grouptripsorganizer.exception.InvalidPercentageBillShareException;
-import com.sroka.grouptripsorganizer.exception.InvalidShareBillShareException;
+import com.sroka.grouptripsorganizer.exception.*;
 import com.sroka.grouptripsorganizer.mapper.BillShareMapper;
 import com.sroka.grouptripsorganizer.repository.bill.BillRepository;
 import com.sroka.grouptripsorganizer.repository.bill.BillShareRepository;
@@ -41,6 +38,11 @@ public class BillShareService {
         User executor = userRepository.getById(executorId);
 
         List<Long> debtorsIds = billShareCreateDto.getDebtorsIds();
+
+        if (debtorsIds.isEmpty()) {
+            throw new InvalidBillShareException();
+        }
+
         List<Integer> percentages = billShareCreateDto.getPercentages();
         List<Integer> shares = billShareCreateDto.getShares();
         List<BigDecimal> exactAmounts = billShareCreateDto.getExactAmounts();
@@ -66,6 +68,10 @@ public class BillShareService {
                 validateBillShareByExactAmounts(billShareCreateDto);
                 splitBillStrategy = splitBillByExactAmounts;
             }
+        }
+
+        if(bill.getBillShares().stream().allMatch(billShare -> billShare.getDebtor().equals(bill.getPayer()))) {
+            bill.setPaid(true);
         }
 
         List<BillShareDto> billShareDtoList = splitBillStrategy.splitBill(bill, splitBillData);

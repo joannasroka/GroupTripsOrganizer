@@ -1,5 +1,6 @@
 package com.sroka.grouptripsorganizer.data_initializer;
 
+import com.github.javafaker.Faker;
 import com.sroka.grouptripsorganizer.entity.account_activation.AccountStatus;
 import com.sroka.grouptripsorganizer.entity.bill.Bill;
 import com.sroka.grouptripsorganizer.entity.bill.BillCategory;
@@ -53,6 +54,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    private Faker faker = new Faker();
+
     @Transactional
     @Override
     public void run(String... args) {
@@ -61,7 +64,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initializeData() {
         initializeUsers();
-        initializeGroups();
+        initializeTrips();
         initializeParticipants();
         initializeBills();
         log.info("Data initialized.");
@@ -78,16 +81,16 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private User createUser(int number, AccountStatus accountStatus) {
-        String mail = "user" + number + "." + accountStatus.toString().toLowerCase() + "@mail.com";
+        String mail = faker.bothify("????##@mail.com");
         String password = null;
 
         if (ACTIVE.equals(accountStatus)) {
             password = passwordEncoder.encode(PASSWORD);
         }
 
-        String firstName = "FirstName" + number + "." + accountStatus.toString().toLowerCase();
-        String lastName = "LastName" + number + "." + accountStatus.toString().toLowerCase();
-        String phoneNumber = "123456789";
+        String firstName = faker.name().firstName();
+        String lastName = faker.name().lastName();
+        String phoneNumber = faker.numerify("#########");
         LocalDate dateOfBirth = generateRandomDateInPeriodOfTime(LocalDate.of(1960, 1, 1), LocalDate.of(2010, 1, 1));
 
         User user = new User(mail, password, firstName, lastName, phoneNumber, dateOfBirth);
@@ -96,16 +99,21 @@ public class DataInitializer implements CommandLineRunner {
         return user;
     }
 
-    private void initializeGroups() {
+    private void initializeTrips() {
         List<Trip> trips = new ArrayList<>();
 
-        IntStream.range(0, GROUPS_AMOUNT).forEach(i -> trips.add(createGroup(i)));
+        IntStream.range(0, GROUPS_AMOUNT).forEach(i -> trips.add(createTrip(i)));
         tripRepository.saveAll(Stream.of(trips).flatMap(Collection::stream).collect(Collectors.toList()));
     }
 
 
-    private Trip createGroup(int number) {
-        String name = "Trip " + number;
+    private Trip createTrip(int number) {
+        String name = faker.address().country() + " " + faker.number().numberBetween(2018, 2021);
+
+        if (name.length() >= 30) {
+            name = name.substring(0, 30);
+        }
+
         byte[] picture = new byte[]{};
 
         List<User> users = userRepository.findAllByAccountStatus(ACTIVE);
@@ -148,7 +156,12 @@ public class DataInitializer implements CommandLineRunner {
         User owner = trip.getOwner();
 
         BigDecimal billTotalAmount = getRandomBillTotalAmount();
-        String billName = "Bill" + owner.getId();
+        String billName = faker.commerce().productName();
+
+        if (billName.length() >= 100) {
+            billName = billName.substring(0, 100);
+        }
+
         BillCategory billCategory = getRandomBillCategory();
         Currency billCurrency = getRandomBillCurrency();
         LocalDate billDate = generateRandomDateInPeriodOfTime(LocalDate.of(2021, 1, 1), LocalDate.now());

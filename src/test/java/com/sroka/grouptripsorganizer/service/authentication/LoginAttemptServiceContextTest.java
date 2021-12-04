@@ -64,11 +64,12 @@ class LoginAttemptServiceContextTest {
     @DisplayName("Should lock username when fail attempts threshold is exceeded and invoked loginFailed()")
     void shouldLockUsernameWhenFailAttemptsThresholdExceededAndInvokedLoginFailed() {
         // given
-        LocalDateTime lastFailedAttemptDate = LocalDateTime.now().minusMinutes(2);
+        int numberOfFailAttempts = 4;
+        LocalDateTime lastFailedAttemptDate = LocalDateTime.now().minusMinutes(5);
 
         FailedLoginAttempt failedLoginAttempt = FailedLoginAttemptBuilder.get()
                 .withLastFailAttempt(lastFailedAttemptDate)
-                .withFailAttempts(4)
+                .withFailAttempts(numberOfFailAttempts)
                 .build();
 
         failedLoginAttempt = failLoginRepository.save(failedLoginAttempt);

@@ -22,7 +22,7 @@ public class Document extends BaseEntity {
     private String name;
 
     @Lob
-    @Column(name = "file", columnDefinition = "BLOB")
+    @Column(name = "file", columnDefinition = "LONGBLOB")
     private byte[] file;
 
     @ManyToOne
