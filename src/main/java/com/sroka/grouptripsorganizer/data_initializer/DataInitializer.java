@@ -114,7 +114,7 @@ public class DataInitializer implements CommandLineRunner {
 
 
     private Trip createTrip(int number) {
-        String name = faker.address().country() + " " + faker.number().numberBetween(2018, 2021);
+        String name = faker.address().country() + " " + faker.number().numberBetween(2019, 2021);
 
         if (name.length() >= 30) {
             name = name.substring(0, 30);
@@ -154,6 +154,9 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeBills() {
+        tripRepository.findAll().forEach(this::addBill);
+        tripRepository.findAll().forEach(this::addBill);
+        tripRepository.findAll().forEach(this::addBill);
         tripRepository.findAll().forEach(this::addBill);
     }
 
