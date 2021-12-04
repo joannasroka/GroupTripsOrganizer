@@ -15,10 +15,10 @@ public class PolicyFactoryConfig {
     public PolicyFactory policyFactory() {
         return new HtmlPolicyBuilder()
                 .allowElements("a", "p", "b", "strong", "em", "u", "s", "span", "br", "ol", "li", "ul", "div",
-                        "h1", "h2", "h3", "h4", "h5", "h6")
-                .allowUrlProtocols("https")
-                .allowAttributes("href", "style", "data-checked"
-                ).onElements("a", "p", "b", "strong", "em", "u", "s", "span", "br", "ol", "li", "ul", "div",
+                        "h1", "h2", "h3", "h4", "h5", "h6", "ul data-checked")
+                .allowUrlProtocols("https", "data")
+                .allowAttributes("href", "style", "data-checked", "data"
+                ).onElements("a", "p", "b", "ul data-checked", "strong", "em", "u", "s", "span", "br", "ol", "li", "ul", "div",
                         "h1", "h2", "h3", "h4", "h5", "h6")
                 .requireRelNofollowOnLinks()
                 .toFactory();
