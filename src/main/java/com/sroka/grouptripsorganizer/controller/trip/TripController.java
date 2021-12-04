@@ -36,7 +36,7 @@ public class TripController extends BaseController {
     @PreAuthorize("permitAll()")
     @PostMapping
     @ResponseStatus(CREATED)
-    public TripDto createTrip(@Valid @RequestBody TripCreateDto tripCreateDto,
+    public TripDto createTrip(@Valid @RequestPart("trip") TripCreateDto tripCreateDto,
                               @RequestPart("picture") MultipartFile picture,
                               Errors errors) throws IOException {
         Long currentUserId = authenticationContextService.getCurrentUserId();
