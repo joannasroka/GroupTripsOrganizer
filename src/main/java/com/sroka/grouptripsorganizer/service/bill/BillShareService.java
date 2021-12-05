@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -151,6 +153,9 @@ public class BillShareService {
                 || (billShareCreateDto.getPercentages().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidPercentageBillShareException();
         }
+        if(billShareCreateDto.getPercentages().stream().anyMatch(Objects::isNull)) {
+            throw new InvalidBillShareException();
+        }
     }
 
     private void validateBillShareByShares(BillShareCreateDto billShareCreateDto) {
@@ -158,12 +163,18 @@ public class BillShareService {
                 || (billShareCreateDto.getShares().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidShareBillShareException();
         }
+        if(billShareCreateDto.getShares().stream().anyMatch(Objects::isNull)) {
+            throw new InvalidBillShareException();
+        }
     }
 
     private void validateBillShareByExactAmounts(BillShareCreateDto billShareCreateDto) {
         if (billShareCreateDto.getExactAmounts() == null
                 || (billShareCreateDto.getExactAmounts().size() != billShareCreateDto.getDebtorsIds().size())) {
             throw new InvalidExactAmountBillShareException();
+        }
+        if(billShareCreateDto.getExactAmounts().stream().anyMatch(Objects::isNull)) {
+            throw new InvalidBillShareException();
         }
     }
 
