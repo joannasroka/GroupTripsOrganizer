@@ -28,7 +28,7 @@ public class Trip extends BaseEntity {
     private String name;
 
     @Lob
-    @Column(name = "picture", columnDefinition = "BLOB")
+    @Column(name = "picture", columnDefinition = "LONGBLOB")
     private byte[] picture;
 
     @ManyToMany
