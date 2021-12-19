@@ -27,7 +27,9 @@ public class UserController extends BaseController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto, @RequestParam String language, Errors errors) {
+    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto,
+                              @RequestParam String language,
+                              Errors errors) {
         return userService.create(userCreateDto, language, errors);
     }
 

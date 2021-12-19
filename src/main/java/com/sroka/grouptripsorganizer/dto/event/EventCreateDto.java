@@ -10,27 +10,32 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class EventCreateDto {
-    @NotBlank(message = "error.cannotBeBlank")
-    @Length(min = 1, max = 50, message = "error.invalidFieldLength")
-    @Schema(required = true)
-    private String name;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class EventCreateDto {
+        @NotBlank(message = "error.cannotBeBlank")
+        @Length(min = 1, max = 50, message = "error.invalidFieldLength")
+        @Schema(required = true)
+        private String name;
 
-    @NotBlank(message = "error.cannotBeBlank")
-    @Length(min = 1, max = 150, message = "error.invalidFieldLength")
-    @Schema(required = true)
-    private String description;
+        @NotBlank(message = "error.cannotBeBlank")
+        @Length(min = 1, max = 150, message = "error.invalidFieldLength")
+        @Schema(required = true)
+        private String description;
 
-    @NotNull(message = "error.cannotBeBlank")
-    @Schema(required = true)
-    private LocalDateTime startDateTime;
+        @NotNull(message = "error.cannotBeBlank")
+        @Schema(required = true)
+        private LocalDateTime startDateTime;
 
-    private LocalDateTime endDateTime;
+        private LocalDateTime endDateTime;
 
-    @NotNull(message = "error.cannotBeBlank")
-    @Schema(required = true)
-    private Long tripId;
-}
+        @NotNull(message = "error.cannotBeBlank")
+        @Schema(required = true)
+        private Long tripId;
+    }
+
+
+
+
+
